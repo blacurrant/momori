@@ -1,13 +1,17 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Application, Container, Sprite, Texture, Assets, Rectangle } from 'pixi.js';
+import { Application, Container, Sprite, Texture, Assets, Rectangle, Graphics } from 'pixi.js';
 import { Viewport } from 'pixi-viewport';
 import { villageMap, gridToIso, isoToGrid, getDepth, PropData } from '@/lib/villageMap';
 import { createParticleSystem } from './ParticleSystem';
 import { VirtualJoystick } from '../UI/VirtualJoystick';
 import { AudioController } from './AudioController';
 import { createCharacter } from './Character';
+import { TavernModal } from '../TavernModal';
+import { PlatformSelector } from '../PlatformSelector';
+import { ChatList } from '../ChatList';
+import { ChatExport } from '@/lib/types';
 
 interface VillageProps {
     width?: number;
@@ -96,6 +100,8 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
     const viewportRef = useRef<Viewport | null>(null);
     const characterRef = useRef<import('./Character').CharacterController | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isTavernOpen, setIsTavernOpen] = useState(false);
+    const [chatData, setChatData] = useState<ChatExport | null>(null);
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -103,19 +109,36 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
         let app: Application | null = null;
         let viewport: Viewport | null = null;
         let mounted = true;
+        let resizeHandler: (() => void) | null = null;
         let particleSystem: { update: (delta: number) => void; destroy: () => void; setType: (type: string) => void } | null = null;
         let character: import('./Character').CharacterController | null = null;
 
         const init = async () => {
             app = new Application();
             await app.init({
-                width,
-                height,
+                resizeTo: window,
                 backgroundColor: 0x2a1f2b,
                 antialias: false,
                 resolution: window.devicePixelRatio || 1,
                 autoDensity: true,
             });
+
+            // Vignette Helper
+            let vignette: Sprite | null = null;
+            const createVignette = (w: number, h: number) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    const grd = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.3, w / 2, h / 2, Math.max(w, h) * 0.8);
+                    grd.addColorStop(0, "rgba(0,0,0,0)");
+                    grd.addColorStop(1, "rgba(0,0,0,0.8)");
+                    ctx.fillStyle = grd;
+                    ctx.fillRect(0, 0, w, h);
+                }
+                return Texture.from(canvas);
+            };
 
             if (!mounted || !containerRef.current) return;
 
@@ -126,18 +149,57 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
 
             if (!mounted) return;
 
-            // Updated world size for 28x28 map (approx 28*64 = 1792 wide iso grid, but iso stretches)
+            // Tighter world bounds to keep the map centered and visible (matches diamond shape)
+            const WORLD_WIDTH = 4800;
+            const WORLD_HEIGHT = 2600;
+
             viewport = new Viewport({
-                screenWidth: width,
-                screenHeight: height,
-                worldWidth: 4000,
-                worldHeight: 4000,
+                screenWidth: window.innerWidth,
+                screenHeight: window.innerHeight,
+                worldWidth: WORLD_WIDTH,
+                worldHeight: WORLD_HEIGHT,
                 events: app.renderer.events,
             });
 
-            // Visual Map Bounds (Calculated for 36x36 + 8 Buffer)
-            // Min X: ~300, Max X: ~3700
-            // Min Y: ~700, Max Y: ~2400
+            // Handle Resize
+            resizeHandler = () => {
+                if (viewport) {
+                    const w = window.innerWidth;
+                    const h = window.innerHeight;
+
+                    viewport.resize(w, h);
+
+                    // Dynamic minScale to ensure world covers screen (no void)
+                    // Use Math.max for cover (crop sides/top), Math.min for fit (show whole world + potential void)
+                    // Given previous complaints about "cut", let's try to fit the whole world if possible, 
+                    // but "max zoom out" usually means "show as much as possible without void".
+                    // Let's use Math.max to avoid black bars.
+                    const minScale = Math.max(w / WORLD_WIDTH, h / WORLD_HEIGHT);
+
+                    // Clamp Zoom update
+                    viewport.clampZoom({
+                        minScale: minScale,
+                        maxScale: 2.0,
+                    });
+
+                    // If current scale is less than new minScale, it will auto-adjust or we force it?
+                    if (viewport.scale.x < minScale) {
+                        viewport.setZoom(minScale);
+                    }
+
+                    viewport.moveCenter(2400, 1300);
+
+                    // Resize Vignette
+                    if (vignette) {
+                        vignette.texture = createVignette(w, h);
+                    }
+                }
+            };
+            window.addEventListener('resize', resizeHandler);
+
+            // Initial Scale
+            const initialMinScale = Math.max(window.innerWidth / WORLD_WIDTH, window.innerHeight / WORLD_HEIGHT);
+
             viewport
                 .drag()
                 .pinch()
@@ -146,26 +208,38 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                 .clamp({
                     direction: 'all',
                     underflow: 'center',
-                    left: 200,    // Tight bound to buffer edge
-                    right: 3800,
-                    top: 600,
-                    bottom: 2500,
+                    left: 0,
+                    right: WORLD_WIDTH,
+                    top: 0,
+                    bottom: WORLD_HEIGHT,
                 })
                 .clampZoom({
-                    minScale: 0.45, // Fits map on standard screen
+                    minScale: initialMinScale,
                     maxScale: 2.0,
                 });
+
+            // Set initial zoom to slightly zoomed in or minScale?
+            // Let's start at a comfortable level (0.45) but respecting minScale.
+            viewport.setZoom(Math.max(0.45, initialMinScale));
 
             app.stage.addChild(viewport);
             viewportRef.current = viewport;
 
+            // Debug Border - Removed
+            // Init Vignette
+            vignette = new Sprite(createVignette(window.innerWidth, window.innerHeight));
+            vignette.eventMode = 'none';
+            app.stage.addChild(vignette);
+
             const groundContainer = new Container();
             const objectsContainer = new Container();
 
-            groundContainer.x = 2000;
-            groundContainer.y = 1000;
-            objectsContainer.x = 2000;
-            objectsContainer.y = 1000;
+            // Center the container within the 4800x2600 world
+            // Map Dimensions: 36x36 tiles
+            groundContainer.x = 2400;
+            groundContainer.y = 150;
+            objectsContainer.x = 2400;
+            objectsContainer.y = 150;
             objectsContainer.sortableChildren = true;
 
             viewport.addChild(groundContainer);
@@ -174,8 +248,8 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
             // Create particle system
             particleSystem = createParticleSystem(app.stage, width, height) as any;
 
-            viewport.moveCenter(2000, 1560); // Exact visual center
-            viewport.setZoom(0.48); // Slightly zoomed out to fit height
+            viewport.moveCenter(2400, 1300); // Center of the map
+            viewport.setZoom(0.45); // Optimal zoom for full view
 
             const { tiles, tileSize } = villageMap;
             const BUFFER = 8; // Visual buffer size (reduced from 12)
@@ -233,36 +307,65 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                     sprite.tint = tint;
                     groundContainer.addChild(sprite);
 
-                    // Buffer Zone Props (Dense Forest)
+                    // Buffer Zone Props (Dense Forest + Vegetation)
                     if (!isPlayable) {
-                        // High chance of trees in buffer
-                        const treeNoise = (Math.sin(x * 45.123 + y * 91.532) * 54321.123) % 1;
-                        if (Math.abs(treeNoise) > 0.3) { // 70% density
-                            const treeType = Math.abs(treeNoise) > 0.6 ? 'tree_pine' : 'tree_oak';
-                            const config = PROP_CONFIGS[treeType];
+                        const zoneNoise = (Math.sin(x * 45.123 + y * 91.532) * 54321.123) % 1;
 
-                            const treeTex = new Texture({
+                        // Decide what to spawn based on noise
+                        let propType: string | null = null;
+
+                        // Trees (High Density in deep buffer, less near edge)
+                        if (Math.abs(zoneNoise) > 0.3) {
+                            propType = Math.abs(zoneNoise) > 0.6 ? 'tree_pine' : 'tree_oak';
+                        }
+                        // Bushes & Flowers (Medium density filler)
+                        else if (Math.abs(zoneNoise) > 0.15) {
+                            const subNoise = (Math.sin(x * 12.34 + y * 56.78) * 12345.67) % 1;
+                            if (subNoise > 0.6) propType = 'bush_large';
+                            else if (subNoise > 0.3) propType = 'bush_small';
+                            else if (subNoise > 0.0) propType = 'grass_tall';
+                            else if (subNoise > -0.5) propType = 'flowers_pink';
+                            else propType = 'flowers_red';
+                        }
+
+                        if (propType) {
+                            const config = PROP_CONFIGS[propType];
+                            if (!config) continue;
+
+                            const propTex = new Texture({
                                 source: spritesheet.source,
                                 frame: new Rectangle(config.sheet.x + config.x, config.sheet.y + config.y, config.w, config.h),
                             });
-                            const treeSpr = new Sprite(treeTex);
-                            treeSpr.anchor.set(0.5, 0.95);
+                            const propSpr = new Sprite(propTex);
+                            propSpr.anchor.set(0.5, 0.95);
 
-                            // Add jitter
-                            const jx = (Math.random() - 0.5) * 30;
-                            const jy = (Math.random() - 0.5) * 30;
+                            // Jitter
+                            const jx = (Math.random() - 0.5) * 40;
+                            const jy = (Math.random() - 0.5) * 40;
+                            propSpr.x = isoPos.x + jx;
+                            propSpr.y = isoPos.y + jy;
 
-                            treeSpr.x = isoPos.x + jx;
-                            treeSpr.y = isoPos.y + jx; // approximate Y
+                            const scaleBase = propType.includes('tree') ? 0.35 : 0.4;
+                            const scaleRand = 0.8 + (Math.random() * 0.4);
+                            propSpr.scale.set(scaleBase * scaleRand);
 
-                            const scale = 0.35 + Math.random() * 0.1;
-                            treeSpr.scale.set(scale);
+                            // Setup Animation Data
+                            const animData = {
+                                id: propType,
+                                x: x,
+                                y: y,
+                                animated: true,
+                                animationType: 'sway'
+                            };
+                            (propSpr as any).animData = animData;
+                            (propSpr as any).baseRotation = (Math.random() - 0.5) * 0.1; // Initial tilt
+                            propSpr.rotation = (propSpr as any).baseRotation;
 
                             // Depth sort manually here since we are generating them outside the main prop loop
                             // Or add to objectsContainer and let it sort?
                             // Yes, add to objectsContainer.
-                            treeSpr.zIndex = getDepth(x, y, 0);
-                            objectsContainer.addChild(treeSpr);
+                            propSpr.zIndex = getDepth(x, y, 0);
+                            objectsContainer.addChild(propSpr);
                         }
                     }
                 }
@@ -283,6 +386,18 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                 const sprite = new Sprite(texture);
                 sprite.anchor.set(0.5, 0.95);
 
+                // Interaction for Buildings
+                if (prop.id.includes('cottage')) {
+                    sprite.eventMode = 'static';
+                    sprite.cursor = 'pointer';
+                    sprite.on('pointerdown', () => {
+                        setIsTavernOpen(true);
+                    });
+                    // Hover effect
+                    sprite.on('pointerover', () => { sprite.tint = 0xeeeeee; });
+                    sprite.on('pointerout', () => { sprite.tint = 0xFFFFFF; });
+                }
+
                 const level = (prop as any).z || 0;
                 const isoPos = gridToIso(prop.x, prop.y, tileSize);
 
@@ -295,25 +410,32 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                 const scaleBase = prop.id.includes('tree') ? 0.35 : 0.4;
                 const scaleRand = 0.95 + (Math.random() * 0.1);
                 sprite.scale.set(scaleBase * scaleRand);
-                sprite.rotation = (Math.random() - 0.5) * 0.05;
+
+                // Inject animation props if vegetation
+                const isVegetation = ['tree', 'bush', 'flower', 'grass'].some(k => prop.id.startsWith(k));
+                if (isVegetation) {
+                    (prop as any).animated = true;
+                    (prop as any).animationType = 'sway';
+                    (sprite as any).baseRotation = (Math.random() - 0.5) * 0.05;
+                } else {
+                    (sprite as any).baseRotation = (Math.random() - 0.5) * 0.05;
+                }
+
+                sprite.rotation = (sprite as any).baseRotation || 0;
 
                 (sprite as any).animData = prop;
                 sprite.zIndex = getDepth(prop.x, prop.y, level);
                 objectsContainer.addChild(sprite);
             }
 
-            // Spawn Character near plaza
-            character = await createCharacter(objectsContainer, 12, 14, tileSize);
+            // Spawn Character near plaza center
+            character = await createCharacter(objectsContainer, 18, 18, tileSize);
             characterRef.current = character;
 
             let time = 0;
             app.ticker.add((ticker) => {
-                time += ticker.deltaTime * 0.02;
-
-                // Auto-follow disabled to prevent unwanted scrolling
-                // if (characterRef.current) {
-                //    viewport.moveCenter(characterRef.current.sprite.x, characterRef.current.sprite.y);
-                // }
+                // Slower time for relaxed wind
+                time += ticker.deltaTime * 0.01;
 
                 if (particleSystem) {
                     particleSystem.update(ticker.deltaTime);
@@ -343,13 +465,30 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                 }
 
                 objectsContainer.children.forEach((child) => {
+                    const sprite = child as Sprite;
                     const animData = (child as any).animData as PropData | undefined;
-                    if (!animData?.animated) return;
+                    // Skip character container or non-anim data
+                    if (!animData) return;
 
-                    if (animData.animationType === 'sway') {
-                        (child as Sprite).rotation += Math.sin(time + animData.x * 0.5) * 0.005;
-                    } else if (animData.animationType === 'flicker') {
-                        (child as Sprite).alpha = 0.85 + Math.sin(time * 4 + animData.x) * 0.15;
+                    if (animData.animated) {
+                        if (animData.animationType === 'sway') {
+                            const baseRot = (child as any).baseRotation || 0;
+
+                            // Wind paramters based on type
+                            let speed = 2.0;
+                            let mag = 0.05;
+
+                            if (animData.id.includes('tree')) { speed = 1.5; mag = 0.03; } // Slow heave
+                            else if (animData.id.includes('flower') || animData.id.includes('grass')) { speed = 4.0; mag = 0.08; } // Flutter
+                            else if (animData.id.includes('bush')) { speed = 2.5; mag = 0.04; }
+
+                            // Combine overarching wind (time) with local variance (x/y)
+                            const wind = Math.sin(time * speed + (animData.x * 0.5) + (animData.y * 0.3));
+                            sprite.rotation = baseRot + wind * mag;
+
+                        } else if (animData.animationType === 'flicker') {
+                            sprite.alpha = 0.85 + Math.sin(time * 4 + animData.x) * 0.15;
+                        }
                     }
                 });
             });
@@ -361,13 +500,18 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
 
         return () => {
             mounted = false;
+            // Cleanup Resize Listener
+            if (resizeHandler) {
+                window.removeEventListener('resize', resizeHandler);
+            }
+
             if (particleSystem) particleSystem.destroy();
             if (character) character.destroy();
             if (app) {
                 app.destroy(true, { children: true, texture: true });
             }
         };
-    }, [width, height]);
+    }, []); // Removed [width, height] dependency since we use window now.
 
     const handleJoystickMove = (x: number, y: number) => {
         if (characterRef.current) {
@@ -376,28 +520,49 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
     };
 
     return (
-        <div className="relative w-full h-full">
+        <div className="fixed inset-0 w-full h-full bg-[#1a111a] overflow-hidden select-none touch-none">
             <AudioController src="/village/ambience.mp3" />
             <div ref={containerRef} className="w-full h-full cursor-move" />
             {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#2a1f2b] pointer-events-none">
+                <div className="absolute inset-0 flex items-center justify-center bg-[#2a1f2b] pointer-events-none z-50">
                     <div className="text-white/60 font-mono text-sm animate-pulse">
                         Loading Village...
                     </div>
                 </div>
             )}
-            <div className="absolute bottom-4 right-4 text-white/30 text-xs font-mono select-none pointer-events-none">
+            <div className="absolute bottom-4 right-4 text-white/30 text-xs font-mono select-none pointer-events-none z-10">
                 Drag to Pan • Scroll to Zoom • Arrow Keys to Move
             </div>
 
-            {/* Joystick Overlay */}
-            <div className="absolute bottom-8 right-8 z-40 md:hidden">
+            {/* Joystick Overlay - Fixed to Viewport */}
+            <div className="fixed bottom-12 right-12 z-50 md:hidden touch-none">
                 <VirtualJoystick onMove={handleJoystickMove} />
             </div>
-            {/* Desktop Joystick (optional, helpful for testing if no touch) */}
-            <div className="absolute bottom-8 right-8 z-40 hidden md:block opacity-50 hover:opacity-100 transition-opacity">
+            {/* Desktop Joystick for testing */}
+            <div className="fixed bottom-12 right-12 z-50 hidden md:block opacity-50 hover:opacity-100 transition-opacity">
                 <VirtualJoystick onMove={handleJoystickMove} />
             </div>
+
+            <TavernModal isOpen={isTavernOpen} onClose={() => setIsTavernOpen(false)}>
+                {chatData ? (
+                    <div className="h-full flex flex-col">
+                        <div className="flex items-center justify-between p-4 border-b border-[#5d4037]/20 bg-[#5d4037]/5">
+                            <button
+                                onClick={() => setChatData(null)}
+                                className="text-[#5d4037] hover:text-[#3e2723] font-serif underline decoration-dotted"
+                            >
+                                ← Back to Archives
+                            </button>
+                            <span className="font-serif text-[#5d4037] font-bold">{chatData.fileName}</span>
+                        </div>
+                        <div className="flex-1 overflow-hidden">
+                            <ChatList messages={chatData.messages} />
+                        </div>
+                    </div>
+                ) : (
+                    <PlatformSelector onLoadComplete={setChatData} />
+                )}
+            </TavernModal>
         </div>
     );
 }

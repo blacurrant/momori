@@ -19,20 +19,13 @@ export function ChatList({ messages }: ChatListProps) {
     }
 
     return (
-        <div className="h-[calc(100vh-140px)]">
-            {/* 
-        Height calculation: 
-        100vh - 
-        (FilterBar height ~70px) - 
-        (Top padding ~20px) - 
-        (Bottom padding ~50px)
-       */}
+        <div className="h-full pr-2">
             <Virtuoso
                 ref={virtuosoRef}
                 data={messages}
                 totalCount={messages.length}
                 itemContent={(index, msg) => (
-                    <div className="pb-2">
+                    <div className="pb-4">
                         <MessageBubble
                             message={msg}
                             previousMessage={messages[index - 1]}

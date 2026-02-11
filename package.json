@@ -14,7 +14,7 @@
     "@react-three/fiber": "^9.5.0",
     "@types/three": "^0.182.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.27.2",
+    "framer-motion": "^12.34.0",
     "groq-sdk": "^0.37.0",
     "lucide-react": "^0.562.0",
     "maath": "^0.10.8",

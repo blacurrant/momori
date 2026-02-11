@@ -106,58 +106,83 @@ export function PlatformSelector({ onLoadComplete }: PlatformSelectorProps) {
     return (
         <div className="w-full max-w-5xl mx-auto p-4 space-y-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
             <div className="grid md:grid-cols-2 gap-12 md:gap-24 relative">
-                {/* Connecting Line */}
-                <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent hidden md:block pointer-events-none" />
+                {/* Decoration: Hanging Ropes */}
+                <div className="absolute -top-12 left-1/4 w-1 h-12 bg-[#3e2723] opacity-60" />
+                <div className="absolute -top-12 right-1/4 w-1 h-12 bg-[#3e2723] opacity-60" />
 
-                {/* WhatsApp Portal */}
+                {/* WhatsApp Signboard */}
                 <button
                     onClick={loadWhatsApp}
                     disabled={!!loadingPlatform}
-                    className="group relative flex flex-col items-center justify-center gap-6 p-8 transition-all duration-700 hover:scale-105"
+                    className="group relative flex flex-col items-center justify-center p-8 transition-transform duration-300 hover:scale-[1.02] active:scale-[0.98]"
                 >
-                    <div className="relative w-40 h-40 flex items-center justify-center">
-                        <div className="absolute inset-0 rounded-full border border-green-500/20 group-hover:border-green-500/50 transition-colors duration-700" />
-                        <div className="absolute inset-2 rounded-full border border-green-500/10 group-hover:scale-90 transition-transform duration-700" />
+                    {/* Signboard Background */}
+                    <div className="absolute inset-0 bg-[#4e342e] border-4 border-[#3e2723] rounded-lg shadow-xl"
+                        style={{
+                            backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")',
+                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.3)'
+                        }}
+                    />
 
-                        {loadingPlatform === 'whatsapp' ? (
-                            <Loader2 className="w-8 h-8 text-green-400/80 animate-spin" />
-                        ) : (
-                            <MessageCircle className="w-8 h-8 text-green-400/50 group-hover:text-green-300 transition-colors duration-500" />
-                        )}
+                    {/* Nail Heads */}
+                    <div className="absolute top-2 left-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
+                    <div className="absolute top-2 right-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
+                    <div className="absolute bottom-2 left-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
+                    <div className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
 
-                        {/* Glow */}
-                        <div className="absolute inset-0 rounded-full bg-green-500/5 blur-2xl group-hover:bg-green-500/10 transition-colors duration-700" />
-                    </div>
+                    <div className="relative z-10 flex flex-col items-center gap-4">
+                        <div className="p-4 rounded-full bg-[#2e7d32]/20 border-2 border-[#2e7d32]/50 group-hover:bg-[#2e7d32]/30 transition-colors">
+                            {loadingPlatform === 'whatsapp' ? (
+                                <Loader2 className="w-12 h-12 text-[#4caf50] animate-spin" />
+                            ) : (
+                                <MessageCircle className="w-12 h-12 text-[#81c784] drop-shadow-md" />
+                            )}
+                        </div>
 
-                    <div className="space-y-2 text-center relative z-10">
-                        <h3 className="text-3xl font-serif text-[#d0d0d0] group-hover:text-white transition-colors duration-500">The Chat Log</h3>
-                        <p className="text-sm font-serif italic text-[#707070] group-hover:text-[#a0a0a0] transition-colors">WhatsApp &bull; _chat.txt</p>
+                        <div className="space-y-1 text-center">
+                            <h3 className="text-2xl font-serif font-bold text-[#e8f5e9] drop-shadow-md tracking-wider">
+                                The Green Log
+                            </h3>
+                            <p className="text-sm font-serif italic text-[#a5d6a7]/80">WhatsApp Chronicles</p>
+                        </div>
                     </div>
                 </button>
 
-                {/* Instagram Portal */}
+                {/* Instagram Signboard */}
                 <button
                     onClick={loadInstagram}
                     disabled={!!loadingPlatform}
-                    className="group relative flex flex-col items-center justify-center gap-6 p-8 transition-all duration-700 hover:scale-105"
+                    className="group relative flex flex-col items-center justify-center p-8 transition-transform duration-300 hover:scale-[1.02] active:scale-[0.98]"
                 >
-                    <div className="relative w-40 h-40 flex items-center justify-center">
-                        <div className="absolute inset-0 rounded-full border border-pink-500/20 group-hover:border-pink-500/50 transition-colors duration-700" />
-                        <div className="absolute inset-2 rounded-full border border-pink-500/10 group-hover:scale-90 transition-transform duration-700" />
+                    {/* Signboard Background */}
+                    <div className="absolute inset-0 bg-[#4e342e] border-4 border-[#3e2723] rounded-lg shadow-xl"
+                        style={{
+                            backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")',
+                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.3)'
+                        }}
+                    />
 
-                        {loadingPlatform === 'instagram' ? (
-                            <Loader2 className="w-8 h-8 text-pink-400/80 animate-spin" />
-                        ) : (
-                            <Instagram className="w-8 h-8 text-pink-400/50 group-hover:text-pink-300 transition-colors duration-500" />
-                        )}
+                    {/* Nail Heads */}
+                    <div className="absolute top-2 left-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
+                    <div className="absolute top-2 right-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
+                    <div className="absolute bottom-2 left-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
+                    <div className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
 
-                        {/* Glow */}
-                        <div className="absolute inset-0 rounded-full bg-pink-500/5 blur-2xl group-hover:bg-pink-500/10 transition-colors duration-700" />
-                    </div>
+                    <div className="relative z-10 flex flex-col items-center gap-4">
+                        <div className="p-4 rounded-full bg-[#ad1457]/20 border-2 border-[#ad1457]/50 group-hover:bg-[#ad1457]/30 transition-colors">
+                            {loadingPlatform === 'instagram' ? (
+                                <Loader2 className="w-12 h-12 text-[#f48fb1] animate-spin" />
+                            ) : (
+                                <Instagram className="w-12 h-12 text-[#f48fb1] drop-shadow-md" />
+                            )}
+                        </div>
 
-                    <div className="space-y-2 text-center relative z-10">
-                        <h3 className="text-3xl font-serif text-[#d0d0d0] group-hover:text-white transition-colors duration-500">The Visual Archive</h3>
-                        <p className="text-sm font-serif italic text-[#707070] group-hover:text-[#a0a0a0] transition-colors">Instagram &bull; JSONs</p>
+                        <div className="space-y-1 text-center">
+                            <h3 className="text-2xl font-serif font-bold text-[#fce4ec] drop-shadow-md tracking-wider">
+                                Visual Archive
+                            </h3>
+                            <p className="text-sm font-serif italic text-[#f8bbd0]/80">Instagram Memories</p>
+                        </div>
                     </div>
                 </button>
             </div>

@@ -80,19 +80,32 @@ export function createParticleSystem(parent: Container, width: number, height: n
     const update = (delta: number) => {
         particles.forEach(p => {
             const verticalSpeed = currentType === 'petals' ? p.speed * 0.7 : p.speed;
-            p.y += verticalSpeed * delta;
+
+            // Isometric fall (diagonal)
+            // Wind blows from top-right to bottom-left (or consistent with sway)
+            // Let's assume standard iso angle
+            p.x -= verticalSpeed * 0.5 * delta; // Drift left
+            p.y += verticalSpeed * 0.5 * delta; // Fall down
+
             p.x += Math.sin(p.wobble) * 0.5;
             p.sprite.rotation += p.spin;
             p.wobble += 0.05 * delta;
 
-            // Reset check
-            if (p.y > height + 10) {
-                p.y = -10;
-                p.x = Math.random() * width;
+            // Reset check (Extended boundaries for diagonal travel)
+            if (p.y > height + 50 || p.x < -50) {
+                // Respawn at top or right
+                if (Math.random() > 0.5) {
+                    p.y = -50;
+                    p.x = Math.random() * (width + 100);
+                } else {
+                    p.x = width + 50;
+                    p.y = Math.random() * (height + 100) - 50;
+                }
             }
-            // Wrap X
-            if (p.x > width + 10) p.x = -10;
-            if (p.x < -10) p.x = width + 10;
+
+            // Wrap logic for side-to-side only if not respawning? 
+            // The respawn logic above handles the diagonal exit.
+            // We just need to ensure initial distribution covers the area.
 
             p.sprite.x = p.x;
             p.sprite.y = p.y;
