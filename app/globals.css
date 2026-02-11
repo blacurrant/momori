@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Momori Dark Theme */
+  --background: #09090b; /* zinc-950 */
+  --foreground: #fafafa; /* zinc-50 */
+
+  --card: rgba(24, 24, 27, 0.4); /* zinc-950/40 */
+  --card-foreground: #fafafa;
+  --card-border: rgba(255, 255, 255, 0.1);
+
+  --primary: #f472b6;
+  --primary-foreground: #ffffff;
+
+  --secondary: #27272a; /* zinc-800 */
+  --secondary-foreground: #fafafa;
+
+  --muted: #71717a; /* zinc-500 */
+  --muted-foreground: #a1a1aa; /* zinc-400 */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-card-border: var(--card-border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-inter);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  min-height: 100vh;
+  /* Subtle background gradient for depth */
+  background-image:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(120, 119, 198, 0.15),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 0% 100%,
+      rgba(244, 114, 182, 0.1),
+      transparent 30%
+    );
 }

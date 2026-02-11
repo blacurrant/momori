@@ -1,0 +1,51 @@
+{"frames": {
+
+"Isometric Assets 1.png":
+{
+	"frame": {"x":0,"y":0,"w":2560,"h":2560},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":2560,"h":2560},
+	"sourceSize": {"w":2560,"h":2560},
+	"anchor": {"x":0.5,"y":0.5}
+},
+"Isometric Assets 2.png":
+{
+	"frame": {"x":2560,"y":0,"w":2560,"h":2560},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":2560,"h":2560},
+	"sourceSize": {"w":2560,"h":2560},
+	"anchor": {"x":0.5,"y":0.5}
+},
+"Isometric Assets 3.png":
+{
+	"frame": {"x":5120,"y":0,"w":2560,"h":2560},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":2560,"h":2560},
+	"sourceSize": {"w":2560,"h":2560},
+	"anchor": {"x":0.5,"y":0.5}
+},
+"Isometric Assets 4.png":
+{
+	"frame": {"x":0,"y":2560,"w":1536,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1536,"h":512},
+	"sourceSize": {"w":1536,"h":512},
+	"anchor": {"x":0.5,"y":0.5}
+}},
+"animations": {
+	"Isometric Assets ": ["Isometric Assets 1.png","Isometric Assets 2.png","Isometric Assets 3.png","Isometric Assets 4.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "village-sprites.png",
+	"format": "RGBA8888",
+	"size": {"w":7680,"h":3072},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:aacbb82602b35a2518cb9c168ce50af5:4a88771590e37afb8de2782580e885c5:feb5e5fec01201ab6154cb842b2dbd18$"
+}
+}
