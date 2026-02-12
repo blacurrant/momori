@@ -12,11 +12,15 @@ import { TavernModal } from '../TavernModal';
 import { PlatformSelector } from '../PlatformSelector';
 import { ChatList } from '../ChatList';
 import { ChatExport } from '@/lib/types';
+import { GalleryModal } from '../GalleryModal';
+import { CatRoomModal } from '../CatRoomModal';
+import { GameRoomModal } from '../GameRoomModal';
 
 interface VillageProps {
     width?: number;
     height?: number;
 }
+
 
 interface PropConfig {
     x: number;
@@ -94,13 +98,25 @@ const getBiomeAt = (x: number, y: number): 'forest' | 'orchard' | 'residential' 
     return 'default';
 };
 
+// Interaction Types & Map
+type InteractionType = 'chat' | 'gallery' | 'cat_room' | 'game_room' | 'none';
+
+const INTERACTION_MAP: Record<string, InteractionType> = {
+    "8,8": "chat",     // Large Cottage -> Tavern/Chat
+    "28,6": "gallery", // Medium Cottage -> Gallery
+    "6,28": "cat_room", // Small Cottage -> Cat Room
+    "28,28": "game_room", // Medium Cottage -> Game Room
+};
+
 export function Village({ width = 1920, height = 1080 }: VillageProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<Application | null>(null);
     const viewportRef = useRef<Viewport | null>(null);
     const characterRef = useRef<import('./Character').CharacterController | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [isTavernOpen, setIsTavernOpen] = useState(false);
+
+    // Interaction State
+    const [activeInteraction, setActiveInteraction] = useState<InteractionType | null>(null);
     const [chatData, setChatData] = useState<ChatExport | null>(null);
 
     useEffect(() => {
@@ -390,12 +406,18 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                 if (prop.id.includes('cottage')) {
                     sprite.eventMode = 'static';
                     sprite.cursor = 'pointer';
-                    sprite.on('pointerdown', () => {
-                        setIsTavernOpen(true);
-                    });
-                    // Hover effect
-                    sprite.on('pointerover', () => { sprite.tint = 0xeeeeee; });
-                    sprite.on('pointerout', () => { sprite.tint = 0xFFFFFF; });
+
+                    const houseKey = `${prop.x},${prop.y}`;
+                    const interactionType = INTERACTION_MAP[houseKey];
+
+                    if (interactionType) {
+                        sprite.on('pointerdown', () => {
+                            setActiveInteraction(interactionType);
+                        });
+                        // Hover effect
+                        sprite.on('pointerover', () => { sprite.tint = 0xdddddd; });
+                        sprite.on('pointerout', () => { sprite.tint = 0xFFFFFF; });
+                    }
                 }
 
                 const level = (prop as any).z || 0;
@@ -543,7 +565,8 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                 <VirtualJoystick onMove={handleJoystickMove} />
             </div>
 
-            <TavernModal isOpen={isTavernOpen} onClose={() => setIsTavernOpen(false)}>
+            {/* Interactions */}
+            <TavernModal isOpen={activeInteraction === 'chat'} onClose={() => setActiveInteraction(null)}>
                 {chatData ? (
                     <div className="h-full flex flex-col">
                         <div className="flex items-center justify-between p-4 border-b border-[#5d4037]/20 bg-[#5d4037]/5">
@@ -563,6 +586,11 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                     <PlatformSelector onLoadComplete={setChatData} />
                 )}
             </TavernModal>
+
+            <CatRoomModal isOpen={activeInteraction === 'cat_room'} onClose={() => setActiveInteraction(null)} />
+            <GameRoomModal isOpen={activeInteraction === 'game_room'} onClose={() => setActiveInteraction(null)} />
+            <GalleryModal isOpen={activeInteraction === 'gallery'} onClose={() => setActiveInteraction(null)} />
+
         </div>
     );
 }

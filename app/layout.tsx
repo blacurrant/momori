@@ -16,6 +16,14 @@ export const metadata: Metadata = {
   description: "A sanctuary for your digital memories.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#050505",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

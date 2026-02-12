@@ -1,0 +1,57 @@
+{"frames": {
+
+"Box3.png":
+{
+	"frame": {"x":0,"y":0,"w":128,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":32},
+	"sourceSize": {"w":128,"h":32},
+	"anchor": {"x":0.5,"y":0.5}
+},
+"free.png":
+{
+	"frame": {"x":0,"y":32,"w":256,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":128},
+	"sourceSize": {"w":256,"h":128},
+	"anchor": {"x":0.5,"y":0.5}
+},
+"FreeSprites.png":
+{
+	"frame": {"x":256,"y":32,"w":256,"h":435},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":435},
+	"sourceSize": {"w":256,"h":435},
+	"anchor": {"x":0.5,"y":0.5}
+},
+"Furnitures.png":
+{
+	"frame": {"x":0,"y":467,"w":512,"h":512},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":512,"h":512},
+	"sourceSize": {"w":512,"h":512},
+	"anchor": {"x":0.5,"y":0.5}
+},
+"Idle.png":
+{
+	"frame": {"x":128,"y":0,"w":320,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":320,"h":32},
+	"sourceSize": {"w":320,"h":32},
+	"anchor": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "cat room.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":979},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:e141193ca15a0046ce35587893e9f18a:123700c59afe0d10f42c00880b51d6dd:6155a61fcf5eb4b8dd57a6e6a7e075fa$"
+}
+}

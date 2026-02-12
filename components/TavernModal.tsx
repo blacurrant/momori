@@ -34,7 +34,7 @@ export function TavernModal({ isOpen, onClose, children }: TavernModalProps) {
                         className={cn(
                             "relative w-full max-w-5xl h-[85vh] overflow-hidden",
                             "bg-[#2c1810]", // Dark wood base
-                            "border-[12px] border-[#3e2723]", // Thick wooden frame
+                            "border-4 md:border-[12px] border-[#3e2723]", // Thick wooden frame (responsive)
                             "rounded-xl shadow-2xl",
                             "flex flex-col"
                         )}

@@ -83,7 +83,7 @@ export function Dashboard({ data }: DashboardProps) {
                 />
 
                 {/* Navigation Tabs */}
-                <div className="flex items-center justify-center gap-2 p-2 pb-0">
+                <div className="flex items-center justify-start md:justify-center gap-2 p-2 pb-0 overflow-x-auto no-scrollbar scroll-smooth">
                     <TabButton active={activeTab === 'messages'} onClick={() => setActiveTab('messages')}>Messages</TabButton>
                     <TabButton active={activeTab === 'photos'} onClick={() => setActiveTab('photos')}>Photos</TabButton>
                     <TabButton active={activeTab === 'videos'} onClick={() => setActiveTab('videos')}>Videos</TabButton>
