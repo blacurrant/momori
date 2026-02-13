@@ -69,7 +69,7 @@ export function ArchiveView({ data, starredMessageIds, onToggleStar }: ArchiveVi
     };
 
     return (
-        <div className="flex flex-col h-full bg-[#0f0d11]/80 backdrop-blur-3xl">
+        <div className="flex flex-col h-full bg-[#FFFDF7]">
             <FilterBar
                 participants={data.participants}
                 searchQuery={searchQuery}

@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { ChatExport, Message } from '@/lib/types';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FilterBar } from './FilterBar';
 import { ChatList } from './ChatList';
 import { AskMomori } from './AskMomori';
@@ -69,8 +69,8 @@ export function Dashboard({ data }: DashboardProps) {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#0f0d11]/80 backdrop-blur-3xl">
-            <div className="sticky top-0 z-[60] bg-black/20 backdrop-blur-2xl border-b border-white/5">
+        <div className="flex flex-col min-h-screen bg-[#FFFDF7]">
+            <div className="sticky top-0 z-[60] bg-white/50 border-b-2 border-[#E8E8E8]">
                 <FilterBar
                     participants={data.participants}
                     searchQuery={searchQuery}
@@ -90,20 +90,30 @@ export function Dashboard({ data }: DashboardProps) {
                     onClearFilters={handleClearFilters}
                 />
 
-                {/* Navigation Tabs */}
-                <div className="flex items-center justify-start md:justify-center gap-6 p-4 pb-0 overflow-x-auto no-scrollbar scroll-smooth">
-                    <TabButton active={activeTab === 'messages'} onClick={() => setActiveTab('messages')}>Whispers</TabButton>
-                    <TabButton active={activeTab === 'photos'} onClick={() => setActiveTab('photos')}>Visions</TabButton>
-                    <TabButton active={activeTab === 'videos'} onClick={() => setActiveTab('videos')}>Chronicles</TabButton>
-                    <TabButton active={activeTab === 'audio'} onClick={() => setActiveTab('audio')}>Echoes</TabButton>
+                {/* Bubbly Navigation Tabs */}
+                <div className="flex items-center justify-start md:justify-center gap-6 p-6 overflow-x-auto no-scrollbar scroll-smooth">
+                    <TabButton active={activeTab === 'messages'} color="#FFB7C5" onClick={() => setActiveTab('messages')}>Whispers</TabButton>
+                    <TabButton active={activeTab === 'photos'} color="#D5ECC2" onClick={() => setActiveTab('photos')}>Visions</TabButton>
+                    <TabButton active={activeTab === 'videos'} color="#B2E2F2" onClick={() => setActiveTab('videos')}>Chronicles</TabButton>
+                    <TabButton active={activeTab === 'audio'} color="#E0BBE4" onClick={() => setActiveTab('audio')}>Echoes</TabButton>
                 </div>
             </div>
 
-            <main className="flex-1 max-w-7xl w-full mx-auto px-4 pt-4">
-                {activeTab === 'messages' && <ChatList messages={filteredMessages} />}
-                {activeTab === 'photos' && <MediaGallery messages={filteredMessages} type="image" />}
-                {activeTab === 'videos' && <MediaGallery messages={filteredMessages} type="video" />}
-                {activeTab === 'audio' && <MediaGallery messages={filteredMessages} type="audio" />}
+            <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeTab}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                    >
+                        {activeTab === 'messages' && <ChatList messages={filteredMessages} />}
+                        {activeTab === 'photos' && <MediaGallery messages={filteredMessages} type="image" />}
+                        {activeTab === 'videos' && <MediaGallery messages={filteredMessages} type="video" />}
+                        {activeTab === 'audio' && <MediaGallery messages={filteredMessages} type="audio" />}
+                    </motion.div>
+                </AnimatePresence>
             </main>
 
             <AskMomori messages={filteredMessages} />
@@ -111,23 +121,31 @@ export function Dashboard({ data }: DashboardProps) {
     );
 }
 
-function TabButton({ children, active, onClick }: { children: React.ReactNode, active: boolean, onClick: () => void }) {
+interface TabButtonProps {
+    children: React.ReactNode;
+    active: boolean;
+    color: string;
+    onClick: () => void;
+}
+
+function TabButton({ children, active, color, onClick }: TabButtonProps) {
     return (
         <button
             onClick={onClick}
             className={cn(
-                "px-8 py-4 font-serif text-base tracking-wide transition-all duration-700 relative",
+                "px-8 py-4 font-serif font-extrabold text-lg tracking-wide transition-all duration-500 relative rounded-3xl",
                 active
-                    ? "text-white"
-                    : "text-white/20 hover:text-white/40"
+                    ? "text-white shadow-lg"
+                    : "text-[#4A4A4A]/30 hover:text-[#4A4A4A]/50 hover:bg-[#E8E8E8]/20"
             )}
+            style={{ backgroundColor: active ? color : 'transparent' }}
         >
-            {children}
+            <span className="relative z-10">{children}</span>
             {active && (
                 <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-200/40"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    layoutId="activeTabGlow"
+                    className="absolute inset-0 rounded-3xl blur-xl opacity-40 -z-10"
+                    style={{ backgroundColor: color }}
                 />
             )}
         </button>

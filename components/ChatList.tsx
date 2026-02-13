@@ -13,8 +13,8 @@ export function ChatList({ messages, onToggleStar }: ChatListProps) {
 
     if (messages.length === 0) {
         return (
-            <div className="h-full flex flex-col items-center justify-center text-[#3e2723]/40 p-10 text-center font-serif italic">
-                <p>The archives are silent on this matter...</p>
+            <div className="h-full flex flex-col items-center justify-center text-[#4A4A4A]/40 p-10 text-center font-serif italic">
+                <p>The whispers are quiet on this matter...</p>
             </div>
         );
     }

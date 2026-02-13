@@ -111,35 +111,32 @@ export function PlatformSelector({ onLoadComplete }: PlatformSelectorProps) {
                 <button
                     onClick={loadWhatsApp}
                     disabled={!!loadingPlatform}
-                    className="group relative flex flex-col items-center justify-center p-12 transition-all duration-700 hover:-translate-y-2 active:scale-[0.98]"
+                    className="group relative flex flex-col items-center justify-center p-12 transition-all duration-700 hover:-translate-y-4 active:scale-95"
                 >
-                    {/* Glass Card */}
+                    {/* Bubbly Card */}
                     <div className={cn(
-                        "absolute inset-0 rounded-[2rem] transition-all duration-700",
-                        "bg-white/5 backdrop-blur-3xl border border-white/5",
-                        "shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] group-hover:bg-white/10 group-hover:border-white/10 group-hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+                        "absolute inset-0 rounded-[3rem] transition-all duration-700",
+                        "bg-white border-8 border-[#D5ECC2]/40",
+                        "shadow-[0_25px_80px_rgba(213,236,194,0.3)] group-hover:shadow-[0_45px_120px_rgba(213,236,194,0.5)] group-hover:border-[#D5ECC2]/80"
                     )} />
 
-                    {/* Subtle Glow Attachment */}
-                    <div className="absolute inset-0 rounded-[2rem] bg-emerald-500/0 group-hover:bg-emerald-500/5 blur-3xl transition-all duration-1000" />
-
-                    <div className="relative z-10 flex flex-col items-center gap-8">
+                    <div className="relative z-10 flex flex-col items-center gap-10">
                         <div className={cn(
-                            "w-20 h-20 rounded-full flex items-center justify-center transition-all duration-700",
-                            "bg-white/5 border border-white/5 group-hover:scale-110 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/20"
+                            "w-24 h-24 rounded-[2rem] flex items-center justify-center transition-all duration-700 rotate-3 group-hover:rotate-0",
+                            "bg-[#D5ECC2]/20 border-4 border-[#D5ECC2]/40 group-hover:scale-110 shadow-sm"
                         )}>
                             {loadingPlatform === 'whatsapp' ? (
-                                <Loader2 className="w-8 h-8 text-emerald-300 animate-spin" />
+                                <Loader2 className="w-10 h-10 text-[#D5ECC2] animate-spin" />
                             ) : (
-                                <MessageCircle className="w-10 h-10 text-white/20 group-hover:text-emerald-300 transition-colors duration-700" />
+                                <MessageCircle className="w-12 h-12 text-[#D5ECC2] group-hover:scale-110 transition-transform duration-700" />
                             )}
                         </div>
 
-                        <div className="space-y-2 text-center">
-                            <h3 className="text-3xl font-serif tracking-tight text-white/90">
-                                The Emerald Grove
+                        <div className="space-y-3 text-center">
+                            <h3 className="text-4xl font-serif font-extrabold tracking-tight text-[#4A4A4A]">
+                                The Bubbly Grove
                             </h3>
-                            <p className="text-xs font-serif italic text-white/10 uppercase tracking-[0.25em] group-hover:text-emerald-300/40 transition-colors">
+                            <p className="text-[11px] font-bold italic text-[#D5ECC2] uppercase tracking-[0.4em]">
                                 WhatsApp Chronicles
                             </p>
                         </div>
@@ -150,35 +147,32 @@ export function PlatformSelector({ onLoadComplete }: PlatformSelectorProps) {
                 <button
                     onClick={loadInstagram}
                     disabled={!!loadingPlatform}
-                    className="group relative flex flex-col items-center justify-center p-12 transition-all duration-700 hover:-translate-y-2 active:scale-[0.98]"
+                    className="group relative flex flex-col items-center justify-center p-12 transition-all duration-700 hover:-translate-y-4 active:scale-95"
                 >
-                    {/* Glass Card */}
+                    {/* Bubbly Card */}
                     <div className={cn(
-                        "absolute inset-0 rounded-[2rem] transition-all duration-700",
-                        "bg-white/5 backdrop-blur-3xl border border-white/5",
-                        "shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] group-hover:bg-white/10 group-hover:border-white/10 group-hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+                        "absolute inset-0 rounded-[3rem] transition-all duration-700",
+                        "bg-white border-8 border-[#E0BBE4]/40",
+                        "shadow-[0_25px_80px_rgba(224,187,228,0.3)] group-hover:shadow-[0_45px_120px_rgba(224,187,228,0.5)] group-hover:border-[#E0BBE4]/80"
                     )} />
 
-                    {/* Subtle Glow Attachment */}
-                    <div className="absolute inset-0 rounded-[2rem] bg-fuchsia-500/0 group-hover:bg-fuchsia-500/5 blur-3xl transition-all duration-1000" />
-
-                    <div className="relative z-10 flex flex-col items-center gap-8">
+                    <div className="relative z-10 flex flex-col items-center gap-10">
                         <div className={cn(
-                            "w-20 h-20 rounded-full flex items-center justify-center transition-all duration-700",
-                            "bg-white/5 border border-white/5 group-hover:scale-110 group-hover:bg-fuchsia-500/10 group-hover:border-fuchsia-500/20"
+                            "w-24 h-24 rounded-[2rem] flex items-center justify-center transition-all duration-700 -rotate-3 group-hover:rotate-0",
+                            "bg-[#E0BBE4]/20 border-4 border-[#E0BBE4]/40 group-hover:scale-110 shadow-sm"
                         )}>
                             {loadingPlatform === 'instagram' ? (
-                                <Loader2 className="w-8 h-8 text-fuchsia-300 animate-spin" />
+                                <Loader2 className="w-10 h-10 text-[#E0BBE4] animate-spin" />
                             ) : (
-                                <Instagram className="w-10 h-10 text-white/20 group-hover:text-fuchsia-300 transition-colors duration-700" />
+                                <Instagram className="w-12 h-12 text-[#E0BBE4] group-hover:scale-110 transition-transform duration-700" />
                             )}
                         </div>
 
-                        <div className="space-y-2 text-center">
-                            <h3 className="text-3xl font-serif tracking-tight text-white/90">
-                                The Violet Stream
+                        <div className="space-y-3 text-center">
+                            <h3 className="text-4xl font-serif font-extrabold tracking-tight text-[#4A4A4A]">
+                                The Pastel Stream
                             </h3>
-                            <p className="text-xs font-serif italic text-white/10 uppercase tracking-[0.25em] group-hover:text-fuchsia-300/40 transition-colors">
+                            <p className="text-[11px] font-bold italic text-[#E0BBE4] uppercase tracking-[0.4em]">
                                 Instagram Echoes
                             </p>
                         </div>

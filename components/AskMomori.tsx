@@ -32,79 +32,86 @@ export function AskMomori({ messages }: AskMomoriProps) {
     return (
         <div className={cn(
             "fixed bottom-8 right-8 z-[70] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]",
-            isOpen ? "w-[450px]" : "w-16"
+            isOpen ? "w-[450px]" : "w-20"
         )}>
             <div className={cn(
-                "bg-black/20 backdrop-blur-[40px] border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden transition-all duration-700",
-                isOpen ? "rounded-3xl" : "rounded-full h-16"
+                "bg-[#FFFDF7] border-4 border-[#FFB7C5]/40 shadow-[0_12px_40px_rgba(255,183,197,0.2)] overflow-hidden transition-all duration-700",
+                isOpen ? "rounded-[2.5rem]" : "rounded-full h-20"
             )}>
 
                 {/* Header / Toggle */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className={cn(
-                        "w-full h-16 flex items-center transition-all duration-500",
-                        isOpen ? "justify-between px-8 border-b border-white/5" : "justify-center hover:bg-white/5"
+                        "w-full h-20 flex items-center transition-all duration-500",
+                        isOpen ? "justify-between px-8 border-b-2 border-[#FFB7C5]/20" : "justify-center hover:bg-[#FFB7C5]/5"
                     )}
                 >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                         <div className={cn(
-                            "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500",
-                            isOpen ? "bg-white/5" : "bg-transparent"
+                            "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500",
+                            isOpen ? "bg-[#FFB7C5]/20" : "bg-transparent"
                         )}>
                             <Leaf
                                 className={cn(
-                                    "w-5 h-5 transition-all duration-700",
-                                    isOpen ? "text-white rotate-45" : "text-white/40 rotate-0"
+                                    "w-6 h-6 transition-all duration-700",
+                                    isOpen ? "text-[#FFB7C5] rotate-45" : "text-[#FFB7C5]/60 rotate-0"
                                 )}
                             />
                         </div>
                         {isOpen && (
-                            <span className="font-serif text-lg tracking-wide text-white/90">
-                                Gather a Thought
+                            <span className="font-serif text-xl font-bold tracking-tight text-[#4A4A4A]">
+                                The Soft Whisper
                             </span>
                         )}
                     </div>
                     {isOpen && (
-                        <ChevronDown className="w-5 h-5 text-white/20" />
+                        <ChevronDown className="w-6 h-6 text-[#FFB7C5]/40" />
                     )}
                 </button>
 
                 {/* Content Area */}
-                {isOpen && (
-                    <div className="p-8 space-y-6">
-                        {answer && (
-                            <div className="bg-white/5 rounded-2xl p-6 text-base/relaxed font-serif text-white/70 italic border border-white/5 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                                {answer}
+                <AnimatePresence>
+                    {isOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            className="p-8 space-y-6"
+                        >
+                            {answer && (
+                                <div className="bg-[#FEF9E7] rounded-[2rem] p-6 text-base/relaxed font-serif text-[#4A4A4A] italic border-2 border-[#FFB7C5]/10 shadow-sm animate-in zoom-in-95 duration-700">
+                                    {answer}
+                                </div>
+                            )}
+
+                            <form onSubmit={handleAsk} className="relative group">
+                                <input
+                                    type="text"
+                                    placeholder="Whisper something sweet..."
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    className={cn(
+                                        "w-full bg-[#FFFFFF] border-3 border-[#E8E8E8] rounded-2xl pl-6 pr-14 py-4",
+                                        "font-serif text-base text-[#4A4A4A] placeholder:text-[#4A4A4A]/20",
+                                        "focus:outline-none focus:border-[#FFB7C5]/40 focus:bg-[#FFFFFF] transition-all shadow-sm"
+                                    )}
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={isLoading || !query.trim()}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-[#FFB7C5]/20 text-[#FFB7C5] hover:bg-[#FFB7C5]/30 disabled:opacity-0 disabled:pointer-events-none transition-all duration-500"
+                                >
+                                    {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                                </button>
+                            </form>
+
+                            <div className="text-[11px] text-center font-serif font-bold italic text-[#FFB7C5]/60 uppercase tracking-[0.2em] pt-2">
+                                A bubbly moment of clarity
                             </div>
-                        )}
-
-                        <form onSubmit={handleAsk} className="relative group">
-                            <input
-                                type="text"
-                                placeholder="Whisper a query..."
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                                className={cn(
-                                    "w-full bg-white/5 border border-white/5 rounded-2xl pl-6 pr-14 py-4",
-                                    "font-serif text-base text-white/90 placeholder:text-white/20",
-                                    "focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all"
-                                )}
-                            />
-                            <button
-                                type="submit"
-                                disabled={isLoading || !query.trim()}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-white/10 text-white/60 hover:text-white hover:bg-white/20 disabled:opacity-0 disabled:pointer-events-none transition-all duration-500"
-                            >
-                                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                            </button>
-                        </form>
-
-                        <div className="text-[10px] text-center font-serif italic text-white/10 uppercase tracking-[0.2em] pt-2">
-                            A fleeting moment of clarity
-                        </div>
-                    </div>
-                )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );

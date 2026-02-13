@@ -58,49 +58,44 @@ export function GalleryModal({ isOpen, onClose }: GalleryModalProps) {
             {isOpen && (
                 <DoorTransition isOpen={true}>
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-12 overflow-hidden">
-                        {/* Ethereal Backdrop */}
+                        {/* Soft Backdrop */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={onClose}
-                            className="absolute inset-0 bg-black/60 backdrop-blur-2xl"
+                            className="absolute inset-0 bg-[#D5ECC2]/20 backdrop-blur-sm"
                         />
 
-                        {/* Modal Container: Minimal Glass */}
+                        {/* Modal Container: 2D Cartoon Style */}
                         <motion.div
-                            initial={{ scale: 0.95, opacity: 0, y: 40 }}
+                            initial={{ scale: 0.9, opacity: 0, y: 60 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.95, opacity: 0, y: 40 }}
-                            transition={{ type: "spring", damping: 30, stiffness: 200 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 60 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 150 }}
                             className={cn(
                                 "relative w-full max-w-7xl h-full flex flex-col overflow-hidden",
-                                "bg-black/20 backdrop-blur-3xl border border-white/5",
-                                "rounded-[2.5rem] shadow-[0_30px_100px_rgba(0,0,0,0.5)]"
+                                "bg-[#FFFDF7] border-8 border-[#D5ECC2]/40",
+                                "rounded-[3.5rem] shadow-[0_40px_120px_rgba(213,236,194,0.3)]"
                             )}
                         >
-                            {/* Static Dust Particle Overlay (Subtle) */}
-                            <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
-                                style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/stardust.png")` }}
-                            />
-
                             {/* Header */}
-                            <div className="relative z-40 w-full px-8 py-6 md:px-12 md:py-10 flex items-center justify-between">
-                                <div className="flex flex-col gap-1">
-                                    <h2 className="text-white/90 text-2xl md:text-4xl font-serif tracking-tight leading-none text-amber-200/80">
-                                        The Whispering Gallery
+                            <div className="relative z-40 w-full px-10 py-8 md:px-14 md:py-12 flex items-center justify-between">
+                                <div className="flex flex-col gap-2">
+                                    <h2 className="text-[#4A4A4A] text-3xl md:text-5xl font-serif font-bold tracking-tight leading-none">
+                                        The Bubbly Gallery
                                     </h2>
-                                    <p className="text-white/20 text-[10px] md:text-xs font-serif italic uppercase tracking-[0.2em]">
-                                        Captured fragments of a life lived
+                                    <p className="text-[#D5ECC2] text-[11px] md:text-sm font-serif font-bold italic uppercase tracking-[0.3em]">
+                                        Sweet fragments of a life lived
                                     </p>
                                 </div>
 
                                 <button
                                     onClick={onClose}
-                                    className="group relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-700 hover:rotate-90"
+                                    className="group relative w-14 h-14 md:w-20 md:h-20 flex items-center justify-center transition-all duration-700 hover:scale-110 active:scale-95"
                                 >
-                                    <div className="absolute inset-0 bg-white/5 rounded-full border border-white/5 group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-700" />
-                                    <X className="relative z-10 w-6 h-6 text-white/40 group-hover:text-white transition-colors" />
+                                    <div className="absolute inset-0 bg-[#D5ECC2] rounded-3xl -rotate-12 group-hover:rotate-0 transition-all duration-700 shadow-lg shadow-[#D5ECC2]/20" />
+                                    <X className="relative z-10 w-8 h-8 text-white" />
                                 </button>
                             </div>
 
@@ -126,60 +121,44 @@ export function GalleryModal({ isOpen, onClose }: GalleryModalProps) {
                                                     initial={{ opacity: 0, scale: 0.5, x: wrappedDist * 100 }}
                                                     animate={{
                                                         x: wrappedDist * (isMobile ? 180 : 420),
-                                                        z: isActive ? 100 : -200,
+                                                        z: isActive ? 120 : -250,
                                                         scale: isActive ? 1.0 : (isMobile ? 0.7 : 0.8),
                                                         opacity: 1 - Math.abs(wrappedDist) * 0.4,
-                                                        rotateY: wrappedDist * (isMobile ? 30 : 45),
-                                                        rotateZ: (i % 2 === 0 ? 0.5 : -0.5) * (isActive ? 0 : 2),
+                                                        rotateY: wrappedDist * (isMobile ? 25 : 35),
+                                                        rotateZ: (i % 2 === 0 ? 1 : -1) * (isActive ? 0 : 3),
                                                     }}
                                                     transition={{
                                                         type: "spring",
-                                                        stiffness: 200,
-                                                        damping: 30
+                                                        stiffness: 180,
+                                                        damping: 25
                                                     }}
                                                     className={cn(
-                                                        "absolute w-[280px] md:w-[580px] aspect-[4/3] cursor-pointer",
+                                                        "absolute w-[280px] md:w-[620px] aspect-[4/3] cursor-pointer",
                                                         isActive ? "z-30" : "z-20"
                                                     )}
                                                     onClick={() => setActiveIndex(i)}
                                                 >
-                                                    {/* Frame: Minimal Glass */}
+                                                    {/* Frame: Polaroid Cartoon Style */}
                                                     <div className={cn(
-                                                        "w-full h-full p-2.5 rounded-2xl transition-all duration-1000",
+                                                        "w-full h-full p-4 md:p-6 bg-white rounded-3xl transition-all duration-700 shadow-xl",
                                                         isActive
-                                                            ? "bg-white/10 ring-1 ring-white/20 shadow-[0_20px_80px_rgba(0,0,0,0.6)]"
-                                                            : "bg-black/20 ring-1 ring-white/5 grayscale"
+                                                            ? "ring-8 ring-[#D5ECC2]/50 shadow-[0_25px_90px_rgba(213,236,194,0.4)]"
+                                                            : "grayscale opacity-60"
                                                     )}>
-                                                        <div className="relative w-full h-full rounded-xl overflow-hidden bg-black/40">
+                                                        <div className="relative w-full h-full rounded-2xl overflow-hidden bg-black/5 border-2 border-[#E8E8E8]">
                                                             <img
                                                                 src={item.url}
                                                                 alt={item.title}
                                                                 className={cn(
                                                                     "w-full h-full object-cover transition-all duration-1000",
-                                                                    isActive ? "scale-100" : "scale-110 opacity-40 group-hover:opacity-60"
+                                                                    isActive ? "scale-100" : "scale-110"
                                                                 )}
                                                             />
-
-                                                            {/* Caption Overlay */}
-                                                            {isActive && (
-                                                                <motion.div
-                                                                    initial={{ opacity: 0, y: 10 }}
-                                                                    animate={{ opacity: 1, y: 0 }}
-                                                                    className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/90 to-transparent pt-20"
-                                                                >
-                                                                    <h3 className="text-white/90 text-xl font-serif tracking-tight text-center">
-                                                                        {item.title}
-                                                                    </h3>
-                                                                    <p className="text-white/30 text-xs font-serif italic text-center mt-2 tracking-wide">
-                                                                        {item.description}
-                                                                    </p>
-                                                                </motion.div>
-                                                            )}
                                                         </div>
                                                     </div>
 
                                                     {/* Soft Shadow */}
-                                                    <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-[90%] h-8 bg-black/60 blur-2xl rounded-full opacity-40" />
+                                                    <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-[90%] h-12 bg-[#D5ECC2]/20 blur-2xl rounded-full opacity-60" />
                                                 </motion.div>
                                             );
                                         })}
@@ -192,18 +171,18 @@ export function GalleryModal({ isOpen, onClose }: GalleryModalProps) {
                                 <div className="flex items-center gap-12">
                                     <button
                                         onClick={handlePrev}
-                                        className="w-14 h-14 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-white/20 hover:text-white hover:bg-white/10 transition-all duration-500"
+                                        className="w-16 h-16 rounded-3xl bg-white border-4 border-[#D5ECC2]/40 flex items-center justify-center text-[#D5ECC2] hover:bg-[#D5ECC2] hover:text-white transition-all duration-500 shadow-lg"
                                     >
-                                        <ChevronLeft className="w-6 h-6" />
+                                        <ChevronLeft className="w-8 h-8" />
                                     </button>
 
-                                    <div className="flex flex-col items-center gap-2">
-                                        <div className="text-white/20 font-serif text-sm tracking-[0.4em] uppercase">
+                                    <div className="flex flex-col items-center gap-3">
+                                        <div className="text-[#4A4A4A]/40 font-serif font-bold text-sm tracking-[0.4em] uppercase">
                                             {String(activeIndex + 1).padStart(2, '0')} / {String(HALL_OF_FAME.length).padStart(2, '0')}
                                         </div>
-                                        <div className="w-40 h-px bg-white/5 relative">
+                                        <div className="w-56 h-3 bg-[#E8E8E8] rounded-full relative overflow-hidden border-2 border-white">
                                             <motion.div
-                                                className="absolute top-0 left-0 h-full bg-amber-200/40"
+                                                className="absolute top-0 left-0 h-full bg-[#D5ECC2]"
                                                 animate={{ width: `${((activeIndex + 1) / HALL_OF_FAME.length) * 100}%` }}
                                             />
                                         </div>
@@ -211,9 +190,9 @@ export function GalleryModal({ isOpen, onClose }: GalleryModalProps) {
 
                                     <button
                                         onClick={handleNext}
-                                        className="w-14 h-14 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-white/20 hover:text-white hover:bg-white/10 transition-all duration-500"
+                                        className="w-16 h-16 rounded-3xl bg-white border-4 border-[#D5ECC2]/40 flex items-center justify-center text-[#D5ECC2] hover:bg-[#D5ECC2] hover:text-white transition-all duration-500 shadow-lg"
                                     >
-                                        <ChevronRight className="w-6 h-6" />
+                                        <ChevronRight className="w-8 h-8" />
                                     </button>
                                 </div>
                             </div>

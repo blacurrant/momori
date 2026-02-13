@@ -51,38 +51,30 @@ export function MediaGallery({ messages, type }: MediaGalleryProps) {
     }
 
     return (
-        <div className="columns-2 md:columns-3 lg:columns-4 gap-4 p-4 pb-24 space-y-4">
+        <div className="columns-2 md:columns-3 lg:columns-4 gap-8 p-8 pb-32 space-y-8">
             {mediaMessages.map(msg => (
-                <div key={msg.id} className="break-inside-avoid relative group rounded-2xl overflow-hidden bg-white/5 border border-white/10">
-                    {/* 
-                         In a real implementation, we need the valid public path.
-                         Since we don't have it in the parser yet, this is a placeholder behavior.
-                         If we had `msg.mediaUri`, we would use `src={msg.mediaUri}`.
-                         For the demo, I will render a placeholder block.
-                     */}
-                    {type === 'image' ? (
-                        msg.mediaUri ? (
-                            <img
-                                src={`/${msg.mediaUri}`}
-                                alt="Memory"
-                                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-                                loading="lazy"
-                            />
+                <div key={msg.id} className="break-inside-avoid relative group rounded-[2.5rem] bg-white border-4 border-[#E8E8E8] p-3 shadow-md transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:border-[#FFB7C5]/30">
+                    <div className="relative rounded-[2rem] overflow-hidden bg-[#FEF9E7]">
+                        {type === 'image' ? (
+                            msg.mediaUri ? (
+                                <img
+                                    src={`/${msg.mediaUri}`}
+                                    alt="Memory"
+                                    className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-110"
+                                    loading="lazy"
+                                />
+                            ) : (
+                                <div className="aspect-square flex items-center justify-center text-[#4A4A4A]/20 text-xs font-bold font-serif uppercase tracking-widest">
+                                    {msg.sender[0]}
+                                </div>
+                            )
                         ) : (
-                            <div className="aspect-square bg-white/5 flex items-center justify-center text-muted-foreground text-xs hover:bg-white/10 transition-colors cursor-pointer">
-                                Image {msg.id}
+                            <div className="aspect-video bg-[#4A4A4A]/5 flex items-center justify-center">
+                                <Film className="w-10 h-10 text-[#4A4A4A]/10" />
                             </div>
-                        )
-                    ) : (
-                        <div className="aspect-video bg-black/40 flex items-center justify-center text-muted-foreground text-xs">
-                            <Film className="w-6 h-6 mb-2 opacity-50" />
-                        </div>
-                    )}
-
-                    <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                        <p className="text-[10px] text-white font-medium truncate">{msg.sender}</p>
-                        <p className="text-[10px] text-white/60">{msg.timestamp.toLocaleDateString()}</p>
+                        )}
                     </div>
+                    {/* Text overlays removed per user request */}
                 </div>
             ))}
         </div>
