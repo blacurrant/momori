@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { ChatExport, Message } from '@/lib/types';
+import { motion } from 'framer-motion';
 import { FilterBar } from './FilterBar';
 import { ChatList } from './ChatList';
 import { AskMomori } from './AskMomori';
@@ -21,6 +22,7 @@ export function Dashboard({ data }: DashboardProps) {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [minWordCount, setMinWordCount] = useState(0);
+    const [showStarredOnly, setShowStarredOnly] = useState(false);
 
     const filteredMessages = useMemo(() => {
         let filtered = data.messages;
@@ -51,8 +53,12 @@ export function Dashboard({ data }: DashboardProps) {
             filtered = filtered.filter(m => m.content.split(/\s+/).filter(w => w.length > 0).length >= minWordCount);
         }
 
+        if (showStarredOnly) {
+            filtered = filtered.filter(m => m.starred);
+        }
+
         return filtered;
-    }, [data.messages, selectedSender, searchQuery, startDate, endDate, minWordCount, activeTab]);
+    }, [data.messages, selectedSender, searchQuery, startDate, endDate, minWordCount, showStarredOnly, activeTab]);
 
     const handleClearFilters = () => {
         setSearchQuery('');
@@ -63,8 +69,8 @@ export function Dashboard({ data }: DashboardProps) {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-transparent">
-            <div className="sticky top-0 z-[60] bg-background/80 backdrop-blur-xl border-b border-white/5">
+        <div className="flex flex-col min-h-screen bg-[#0f0d11]/80 backdrop-blur-3xl">
+            <div className="sticky top-0 z-[60] bg-black/20 backdrop-blur-2xl border-b border-white/5">
                 <FilterBar
                     participants={data.participants}
                     searchQuery={searchQuery}
@@ -77,17 +83,19 @@ export function Dashboard({ data }: DashboardProps) {
                     onEndDateChange={setEndDate}
                     minWordCount={minWordCount}
                     onMinWordCountChange={setMinWordCount}
+                    showStarredOnly={showStarredOnly}
+                    onShowStarredOnlyChange={setShowStarredOnly}
                     totalMessages={data.totalMessages}
                     shownMessages={filteredMessages.length}
                     onClearFilters={handleClearFilters}
                 />
 
                 {/* Navigation Tabs */}
-                <div className="flex items-center justify-start md:justify-center gap-2 p-2 pb-0 overflow-x-auto no-scrollbar scroll-smooth">
-                    <TabButton active={activeTab === 'messages'} onClick={() => setActiveTab('messages')}>Messages</TabButton>
-                    <TabButton active={activeTab === 'photos'} onClick={() => setActiveTab('photos')}>Photos</TabButton>
-                    <TabButton active={activeTab === 'videos'} onClick={() => setActiveTab('videos')}>Videos</TabButton>
-                    <TabButton active={activeTab === 'audio'} onClick={() => setActiveTab('audio')}>Audio</TabButton>
+                <div className="flex items-center justify-start md:justify-center gap-6 p-4 pb-0 overflow-x-auto no-scrollbar scroll-smooth">
+                    <TabButton active={activeTab === 'messages'} onClick={() => setActiveTab('messages')}>Whispers</TabButton>
+                    <TabButton active={activeTab === 'photos'} onClick={() => setActiveTab('photos')}>Visions</TabButton>
+                    <TabButton active={activeTab === 'videos'} onClick={() => setActiveTab('videos')}>Chronicles</TabButton>
+                    <TabButton active={activeTab === 'audio'} onClick={() => setActiveTab('audio')}>Echoes</TabButton>
                 </div>
             </div>
 
@@ -108,13 +116,20 @@ function TabButton({ children, active, onClick }: { children: React.ReactNode, a
         <button
             onClick={onClick}
             className={cn(
-                "px-6 py-3 text-sm font-medium border-b-2 transition-all",
+                "px-8 py-4 font-serif text-base tracking-wide transition-all duration-700 relative",
                 active
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-white hover:border-white/10"
+                    ? "text-white"
+                    : "text-white/20 hover:text-white/40"
             )}
         >
             {children}
+            {active && (
+                <motion.div
+                    layoutId="activeTab"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-200/40"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+            )}
         </button>
     );
 }

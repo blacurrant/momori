@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.variable, cormorant.variable, "font-sans antialiased bg-[#050505] text-[#e1e1e1]")}>
+      <body className={cn(inter.variable, cormorant.variable, "font-sans antialiased bg-[#0f0d11] text-[#e1e1e1]")}>
         <GlobalMusic />
         {children}
       </body>

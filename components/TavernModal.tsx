@@ -17,75 +17,56 @@ export function TavernModal({ isOpen, onClose, children }: TavernModalProps) {
         <AnimatePresence>
             {isOpen && (
                 <DoorTransition isOpen={true}>
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8">
-                        {/* Backdrop with blur and dim */}
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-12 overflow-hidden">
+                        {/* Ethereal Backdrop */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={onClose}
-                            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                            className="absolute inset-0 bg-black/60 backdrop-blur-2xl"
                         />
 
-                        {/* Modal Container */}
+                        {/* Modal Container: Minimal Glass */}
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            initial={{ scale: 0.95, opacity: 0, y: 40 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 40 }}
+                            transition={{ type: "spring", damping: 30, stiffness: 200 }}
                             className={cn(
-                                "relative w-full max-w-6xl h-[95vh] md:h-[85vh] overflow-hidden",
-                                "bg-[#2c1810]",
-                                "border-4 md:border-[12px] border-[#3e2723]",
-                                "rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.8)]",
-                                "flex flex-col"
+                                "relative w-full max-w-7xl h-full flex flex-col overflow-hidden",
+                                "bg-black/20 backdrop-blur-3xl border border-white/5",
+                                "rounded-[2.5rem] shadow-[0_30px_100px_rgba(0,0,0,0.5)]"
                             )}
                         >
-                            {/* Decorative Corner Brackets */}
-                            <div className="absolute top-0 left-0 w-16 h-16 border-t-8 border-l-8 border-[#8d6e63]/20 rounded-tl-lg pointer-events-none z-30" />
-                            <div className="absolute top-0 right-0 w-16 h-16 border-t-8 border-r-8 border-[#8d6e63]/20 rounded-tr-lg pointer-events-none z-30" />
-                            <div className="absolute bottom-0 left-0 w-16 h-16 border-b-8 border-l-8 border-[#8d6e63]/20 rounded-bl-lg pointer-events-none z-30" />
-                            <div className="absolute bottom-0 right-0 w-16 h-16 border-b-8 border-r-8 border-[#8d6e63]/20 rounded-br-lg pointer-events-none z-30" />
+                            {/* Static Dust Particle Overlay (Subtle) */}
+                            <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
+                                style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/stardust.png")` }}
+                            />
 
-                            {/* Hanging Sign Header */}
-                            <div className="relative z-40 w-full bg-[#1a0f0a] border-b-4 border-[#3e2723] p-3 md:p-5 flex items-center justify-between shadow-2xl">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-[#ffb74d]/10 flex items-center justify-center border-2 border-[#ffb74d]/30 rotate-3">
-                                        <span className="text-3xl drop-shadow-lg">📜</span>
-                                    </div>
-                                    <div>
-                                        <h2 className="text-[#ffb74d] text-xl md:text-3xl font-serif tracking-tight drop-shadow-md leading-none">
-                                            The Whispering Hearth
-                                        </h2>
-                                        <p className="text-[#a1887f] text-[10px] md:text-xs font-serif italic mt-1 opacity-70">
-                                            Where tales are told and memories kept
-                                        </p>
-                                    </div>
+                            {/* Minimal Header */}
+                            <div className="relative z-40 w-full px-8 py-6 md:px-12 md:py-10 flex items-center justify-between">
+                                <div className="flex flex-col gap-1">
+                                    <h2 className="text-white/90 text-2xl md:text-4xl font-serif tracking-tight leading-none">
+                                        The Whispering Sanctuary
+                                    </h2>
+                                    <p className="text-white/20 text-[10px] md:text-xs font-serif italic uppercase tracking-[0.2em]">
+                                        A collection of ephemeral digital traces
+                                    </p>
                                 </div>
 
-                                {/* Close Button - Wax Seal Style */}
                                 <button
                                     onClick={onClose}
-                                    className="group relative w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all hover:rotate-90"
+                                    className="group relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-700 hover:rotate-90"
                                 >
-                                    <div className="absolute inset-0 bg-[#c62828] rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)] border-2 border-[#b71c1c]" />
-                                    <X className="relative z-10 w-6 h-6 text-white" />
+                                    <div className="absolute inset-0 bg-white/5 rounded-full border border-white/5 group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-700" />
+                                    <X className="relative z-10 w-6 h-6 text-white/40 group-hover:text-white transition-colors" />
                                 </button>
                             </div>
 
-                            {/* Content Area - Parchment/Paper look */}
-                            <div className="flex-1 overflow-hidden relative p-4 md:p-8">
-                                <div className="absolute inset-0 bg-[#f4ece1] opacity-[0.98]"
-                                    style={{
-                                        backgroundImage: 'url("https://www.transparenttextures.com/patterns/aged-paper.png")'
-                                    }}
-                                />
-
-                                {/* Inner Shadow */}
-                                <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.15)] pointer-events-none z-10" />
-
-                                {/* Actual Content */}
-                                <div className="relative z-20 h-full overflow-hidden">
+                            {/* Content Area */}
+                            <div className="flex-1 overflow-hidden relative">
+                                <div className="relative z-20 h-full">
                                     {children}
                                 </div>
                             </div>

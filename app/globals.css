@@ -2,8 +2,8 @@
 
 :root {
   /* Momori Dark Theme */
-  --background: #09090b; /* zinc-950 */
-  --foreground: #fafafa; /* zinc-50 */
+  --background: #0f0d11; /* Deep atmospheric violet-gray */
+  --foreground: #e1e1e1; /* Off-white for readability */
 
   --card: rgba(24, 24, 27, 0.4); /* zinc-950/40 */
   --card-foreground: #fafafa;
@@ -45,12 +45,12 @@ body {
   background-image:
     radial-gradient(
       circle at 50% 0%,
-      rgba(120, 119, 198, 0.15),
-      transparent 40%
+      rgba(159, 122, 234, 0.08),
+      transparent 60%
     ),
     radial-gradient(
-      circle at 0% 100%,
-      rgba(244, 114, 182, 0.1),
-      transparent 30%
+      circle at 100% 100%,
+      rgba(76, 175, 80, 0.05),
+      transparent 50%
     );
 }

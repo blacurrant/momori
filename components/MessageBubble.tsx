@@ -1,7 +1,6 @@
-import React from 'react';
-import { Message } from '@/lib/types';
+import { MessageCircle, Instagram, User, Star, Image as ImageIcon, Video, Mic } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Image as ImageIcon, Video, Mic, Star } from 'lucide-react';
+import { Message } from '@/lib/types';
 
 interface MessageBubbleProps {
     message: Message;
@@ -11,98 +10,106 @@ interface MessageBubbleProps {
 
 export function MessageBubble({ message, previousMessage, onToggleStar }: MessageBubbleProps) {
     const isChain = previousMessage && previousMessage.sender === message.sender;
-
     const isWhatsApp = message.platform === 'whatsapp';
-    const isInstagram = message.platform === 'instagram';
-
-    const inkColor = isWhatsApp ? "text-[#2e7d32]" : isInstagram ? "text-[#880e4f]" : "text-[#3e2723]";
-    const nameColor = isWhatsApp ? "text-[#1b5e20]" : isInstagram ? "text-[#4a148c]" : "text-[#3e2723]";
 
     return (
         <div className={cn(
-            "flex gap-4 group px-4 py-2 hover:bg-[#5d4037]/5 transition-all duration-300 relative",
-            !isChain && "mt-8 border-t border-dashed border-[#5d4037]/20 pt-8"
+            "flex w-full group animate-in fade-in slide-in-from-bottom-2 duration-700",
+            message.isMe ? "justify-end" : "justify-start",
+            isChain ? "mt-1" : "mt-8"
         )}>
-            {/* Avatar as a 'Stamp' */}
-            <div className="w-12 flex-shrink-0 flex flex-col items-center">
+            <div className={cn(
+                "flex max-w-[85%] md:max-w-[70%] gap-4 items-end",
+                message.isMe ? "flex-row-reverse" : "flex-row"
+            )}>
+                {/* Minimal Avatar/Indicator */}
                 {!isChain ? (
-                    <div className={cn(
-                        "w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg border-2 rotate-3 transition-transform group-hover:rotate-0",
-                        isWhatsApp ? "border-[#2e7d32]/20 bg-[#e8f5e9]" : "border-[#880e4f]/20 bg-[#fce4ec]",
-                    )}>
-                        <span className={cn("text-xl font-serif font-bold", nameColor)}>
-                            {message.sender[0]?.toUpperCase()}
-                        </span>
+                    <div className="relative w-10 h-10 flex-shrink-0">
+                        <div className={cn(
+                            "absolute inset-0 rounded-full border border-white/5 overflow-hidden transition-all duration-700",
+                            isWhatsApp ? "bg-emerald-500/5 group-hover:bg-emerald-500/10" : "bg-fuchsia-500/5 group-hover:bg-fuchsia-500/10"
+                        )}>
+                            {message.avatar ? (
+                                <img src={message.avatar} alt="" className="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-white/10 uppercase font-serif text-sm">
+                                    {message.sender[0]}
+                                </div>
+                            )}
+                        </div>
+                        {/* Soft Platform Glow */}
+                        <div className={cn(
+                            "absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full blur-[2px] opacity-40",
+                            isWhatsApp ? "bg-emerald-400" : "bg-fuchsia-400"
+                        )} />
                     </div>
                 ) : (
-                    <div className="w-10 text-[10px] text-[#3e2723]/30 group-hover:opacity-100 opacity-0 text-center pt-2 font-serif italic transition-opacity">
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
+                    <div className="w-10 flex-shrink-0" />
                 )}
-            </div>
 
-            <div className="flex-1 min-w-0">
-                {!isChain && (
-                    <div className="flex items-baseline gap-3 mb-2">
-                        <span className={cn("font-bold font-serif text-lg tracking-tight", nameColor)}>
+                {/* Bubble Container */}
+                <div className="flex flex-col gap-1.5 relative min-w-0">
+                    {!isChain && (
+                        <span className={cn(
+                            "text-[10px] font-sans font-bold uppercase tracking-[0.25em] px-1 opacity-20 group-hover:opacity-40 transition-opacity",
+                            message.isMe ? "text-right" : "text-left"
+                        )}>
                             {message.sender}
                         </span>
-                        <span className="text-[10px] font-serif italic text-black/30 uppercase tracking-widest">
-                            {message.timestamp.toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                    </div>
-                )}
-
-                <div className="relative group/content">
-                    <div className={cn(
-                        "text-base md:text-lg font-serif break-words whitespace-pre-wrap leading-relaxed max-w-[90%]",
-                        inkColor,
-                        message.type === 'system' && "italic text-sm text-[#3e2723]/40 border-l-4 border-[#3e2723]/10 pl-4 py-1"
-                    )}>
-                        {renderContent(message)}
-                    </div>
-
-                    {/* Star Toggle */}
-                    {message.type !== 'system' && (
-                        <button
-                            onClick={() => onToggleStar?.(message.id)}
-                            className={cn(
-                                "absolute top-0 -right-8 p-2 rounded-full transition-all duration-500",
-                                "opacity-0 group-hover/content:opacity-100",
-                                message.starred ? "opacity-100 scale-110" : "hover:scale-125 hover:bg-[#ffb74d]/10"
-                            )}
-                        >
-                            <Star
-                                className={cn(
-                                    "w-5 h-5 transition-all",
-                                    message.starred
-                                        ? "fill-[#ffb74d] text-[#ffb74d] drop-shadow-[0_0_8px_rgba(255,183,77,0.6)]"
-                                        : "text-[#3e2723]/20 hover:text-[#ffb74d]"
-                                )}
-                            />
-                        </button>
                     )}
+
+                    <div className={cn(
+                        "relative px-5 py-3.5 rounded-2xl transition-all duration-700",
+                        "bg-white/5 backdrop-blur-3xl border border-white/5",
+                        message.starred ? "border-amber-400/20 shadow-[0_0_20px_rgba(251,191,36,0.05)]" : "group-hover:border-white/10",
+                        message.isMe ? "rounded-tr-none" : "rounded-tl-none"
+                    )}>
+                        <div className="font-serif text-[15px] md:text-[17px] leading-relaxed text-white/70 selection:bg-white/10">
+                            {renderContent(message)}
+                        </div>
+
+                        <div className="flex items-center justify-between gap-4 mt-3">
+                            <span className="text-[10px] font-serif italic text-white/10 tracking-[0.1em] group-hover:text-white/20 transition-colors uppercase">
+                                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+
+                            <button
+                                onClick={() => onToggleStar?.(message.id)}
+                                className={cn(
+                                    "p-1.5 rounded-lg transition-all duration-700",
+                                    message.starred
+                                        ? "text-amber-300 opacity-60"
+                                        : "text-white/5 opacity-0 group-hover:opacity-100 hover:text-white/40"
+                                )}
+                            >
+                                <Star className={cn("w-3.5 h-3.5", message.starred && "fill-current")} />
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            {/* Platform Seal */}
-            {!isChain && (
-                <div className="absolute top-8 right-4 opacity-10 pointer-events-none grayscale group-hover:grayscale-0 transition-all duration-700">
-                    <div className={cn(
-                        "w-8 h-8 rounded-full flex items-center justify-center border-2",
-                        isWhatsApp ? "border-[#25D366] text-[#25D366]" : "border-[#E1306C] text-[#E1306C]"
-                    )}>
-                        <span className="text-[10px] font-bold uppercase">{isWhatsApp ? 'WA' : 'IG'}</span>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
 
 function renderContent(message: Message) {
-    if (message.type === 'image') return <div className="flex items-center gap-3 p-4 bg-[#2c1810]/5 rounded-2xl border-2 border-[#3e2723]/5"><ImageIcon size={20} className="opacity-50" /> <span className="italic opacity-70 font-serif">A captured frame of time</span></div>;
-    if (message.type === 'video') return <div className="flex items-center gap-3 p-4 bg-[#2c1810]/5 rounded-2xl border-2 border-[#3e2723]/5"><Video size={20} className="opacity-50" /> <span className="italic opacity-70 font-serif">A moving chronicle</span></div>;
-    if (message.type === 'audio') return <div className="flex items-center gap-3 p-4 bg-[#2c1810]/5 rounded-2xl border-2 border-[#3e2723]/5"><Mic size={20} className="opacity-50" /> <span className="italic opacity-70 font-serif">A whisper from the past</span></div>;
+    if (message.type === 'image') return (
+        <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 opacity-60">
+            <ImageIcon size={18} strokeWidth={1.5} />
+            <span className="italic text-sm font-serif">A captured gaze</span>
+        </div>
+    );
+    if (message.type === 'video') return (
+        <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 opacity-60">
+            <Video size={18} strokeWidth={1.5} />
+            <span className="italic text-sm font-serif">A moving breath</span>
+        </div>
+    );
+    if (message.type === 'audio') return (
+        <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 opacity-60">
+            <Mic size={18} strokeWidth={1.5} />
+            <span className="italic text-sm font-serif">An echo in the mist</span>
+        </div>
+    );
     return message.content;
 }

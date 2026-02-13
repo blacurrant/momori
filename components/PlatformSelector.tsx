@@ -104,84 +104,83 @@ export function PlatformSelector({ onLoadComplete }: PlatformSelectorProps) {
     };
 
     return (
-        <div className="w-full max-w-5xl mx-auto p-4 space-y-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-            <div className="grid md:grid-cols-2 gap-12 md:gap-24 relative">
-                {/* Decoration: Hanging Ropes */}
-                <div className="absolute -top-12 left-1/4 w-1 h-12 bg-[#3e2723] opacity-60" />
-                <div className="absolute -top-12 right-1/4 w-1 h-12 bg-[#3e2723] opacity-60" />
+        <div className="w-full max-w-5xl mx-auto p-4 space-y-24 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+            <div className="grid md:grid-cols-2 gap-16 md:gap-32 relative">
 
-                {/* WhatsApp Signboard */}
+                {/* WhatsApp Choice */}
                 <button
                     onClick={loadWhatsApp}
                     disabled={!!loadingPlatform}
-                    className="group relative flex flex-col items-center justify-center p-8 transition-transform duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                    className="group relative flex flex-col items-center justify-center p-12 transition-all duration-700 hover:-translate-y-2 active:scale-[0.98]"
                 >
-                    {/* Signboard Background */}
-                    <div className="absolute inset-0 bg-[#4e342e] border-4 border-[#3e2723] rounded-lg shadow-xl"
-                        style={{
-                            backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")',
-                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.3)'
-                        }}
-                    />
+                    {/* Glass Card */}
+                    <div className={cn(
+                        "absolute inset-0 rounded-[2rem] transition-all duration-700",
+                        "bg-white/5 backdrop-blur-3xl border border-white/5",
+                        "shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] group-hover:bg-white/10 group-hover:border-white/10 group-hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+                    )} />
 
-                    {/* Nail Heads */}
-                    <div className="absolute top-2 left-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
-                    <div className="absolute top-2 right-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
-                    <div className="absolute bottom-2 left-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
-                    <div className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
+                    {/* Subtle Glow Attachment */}
+                    <div className="absolute inset-0 rounded-[2rem] bg-emerald-500/0 group-hover:bg-emerald-500/5 blur-3xl transition-all duration-1000" />
 
-                    <div className="relative z-10 flex flex-col items-center gap-4">
-                        <div className="p-4 rounded-full bg-[#2e7d32]/20 border-2 border-[#2e7d32]/50 group-hover:bg-[#2e7d32]/30 transition-colors">
+                    <div className="relative z-10 flex flex-col items-center gap-8">
+                        <div className={cn(
+                            "w-20 h-20 rounded-full flex items-center justify-center transition-all duration-700",
+                            "bg-white/5 border border-white/5 group-hover:scale-110 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/20"
+                        )}>
                             {loadingPlatform === 'whatsapp' ? (
-                                <Loader2 className="w-12 h-12 text-[#4caf50] animate-spin" />
+                                <Loader2 className="w-8 h-8 text-emerald-300 animate-spin" />
                             ) : (
-                                <MessageCircle className="w-12 h-12 text-[#81c784] drop-shadow-md" />
+                                <MessageCircle className="w-10 h-10 text-white/20 group-hover:text-emerald-300 transition-colors duration-700" />
                             )}
                         </div>
 
-                        <div className="space-y-1 text-center">
-                            <h3 className="text-2xl font-serif font-bold text-[#e8f5e9] drop-shadow-md tracking-wider">
-                                The Green Log
+                        <div className="space-y-2 text-center">
+                            <h3 className="text-3xl font-serif tracking-tight text-white/90">
+                                The Emerald Grove
                             </h3>
-                            <p className="text-sm font-serif italic text-[#a5d6a7]/80">WhatsApp Chronicles</p>
+                            <p className="text-xs font-serif italic text-white/10 uppercase tracking-[0.25em] group-hover:text-emerald-300/40 transition-colors">
+                                WhatsApp Chronicles
+                            </p>
                         </div>
                     </div>
                 </button>
 
-                {/* Instagram Signboard */}
+                {/* Instagram Choice */}
                 <button
                     onClick={loadInstagram}
                     disabled={!!loadingPlatform}
-                    className="group relative flex flex-col items-center justify-center p-8 transition-transform duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                    className="group relative flex flex-col items-center justify-center p-12 transition-all duration-700 hover:-translate-y-2 active:scale-[0.98]"
                 >
-                    {/* Signboard Background */}
-                    <div className="absolute inset-0 bg-[#4e342e] border-4 border-[#3e2723] rounded-lg shadow-xl"
-                        style={{
-                            backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")',
-                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.3)'
-                        }}
-                    />
+                    {/* Glass Card */}
+                    <div className={cn(
+                        "absolute inset-0 rounded-[2rem] transition-all duration-700",
+                        "bg-white/5 backdrop-blur-3xl border border-white/5",
+                        "shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] group-hover:bg-white/10 group-hover:border-white/10 group-hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+                    )} />
 
-                    {/* Nail Heads */}
-                    <div className="absolute top-2 left-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
-                    <div className="absolute top-2 right-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
-                    <div className="absolute bottom-2 left-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
-                    <div className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-inner" />
+                    {/* Subtle Glow Attachment */}
+                    <div className="absolute inset-0 rounded-[2rem] bg-fuchsia-500/0 group-hover:bg-fuchsia-500/5 blur-3xl transition-all duration-1000" />
 
-                    <div className="relative z-10 flex flex-col items-center gap-4">
-                        <div className="p-4 rounded-full bg-[#ad1457]/20 border-2 border-[#ad1457]/50 group-hover:bg-[#ad1457]/30 transition-colors">
+                    <div className="relative z-10 flex flex-col items-center gap-8">
+                        <div className={cn(
+                            "w-20 h-20 rounded-full flex items-center justify-center transition-all duration-700",
+                            "bg-white/5 border border-white/5 group-hover:scale-110 group-hover:bg-fuchsia-500/10 group-hover:border-fuchsia-500/20"
+                        )}>
                             {loadingPlatform === 'instagram' ? (
-                                <Loader2 className="w-12 h-12 text-[#f48fb1] animate-spin" />
+                                <Loader2 className="w-8 h-8 text-fuchsia-300 animate-spin" />
                             ) : (
-                                <Instagram className="w-12 h-12 text-[#f48fb1] drop-shadow-md" />
+                                <Instagram className="w-10 h-10 text-white/20 group-hover:text-fuchsia-300 transition-colors duration-700" />
                             )}
                         </div>
 
-                        <div className="space-y-1 text-center">
-                            <h3 className="text-2xl font-serif font-bold text-[#fce4ec] drop-shadow-md tracking-wider">
-                                Visual Archive
+                        <div className="space-y-2 text-center">
+                            <h3 className="text-3xl font-serif tracking-tight text-white/90">
+                                The Violet Stream
                             </h3>
-                            <p className="text-sm font-serif italic text-[#f8bbd0]/80">Instagram Memories</p>
+                            <p className="text-xs font-serif italic text-white/10 uppercase tracking-[0.25em] group-hover:text-fuchsia-300/40 transition-colors">
+                                Instagram Echoes
+                            </p>
                         </div>
                     </div>
                 </button>

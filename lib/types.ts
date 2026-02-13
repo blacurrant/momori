@@ -9,6 +9,8 @@ export interface Message {
   type: "text" | "image" | "video" | "audio" | "system";
   mediaUri?: string;
   starred?: boolean;
+  isMe?: boolean;
+  avatar?: string;
 }
 
 export interface ChatExport {
