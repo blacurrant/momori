@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Leaf, Send, Loader2, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { generateInsights } from '@/lib/groq';
 import { Message } from '@/lib/types';
 import { cn } from '@/lib/utils';
