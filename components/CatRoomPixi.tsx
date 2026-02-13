@@ -257,7 +257,7 @@ export function CatRoomCanvas() {
             // --- BOX KITTENS ---
             if (catTextures["Box3.png"]) {
                 const boxBase = catTextures["Box3.png"];
-                const boxFrames = [];
+                const boxFrames: Texture[] = [];
                 for (let i = 0; i < 4; i++) {
                     const frameX = boxBase.frame.x + (i * 32);
                     const frameY = boxBase.frame.y;

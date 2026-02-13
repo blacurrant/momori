@@ -118,6 +118,7 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
     // Interaction State
     const [activeInteraction, setActiveInteraction] = useState<InteractionType | null>(null);
     const [chatData, setChatData] = useState<ChatExport | null>(null);
+    const lastTriggeredHouseRef = useRef<string | null>(null);
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -483,6 +484,44 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                         if (biome === 'forest') particleSystem.setType('leaves');
                         else if (biome === 'plaza') particleSystem.setType('petals');
                         else particleSystem.setType('default');
+                    }
+
+                    // --- Proximity Interaction Logic ---
+                    const TRIGGER_DIST = 1.6; // Units (tiles) to trigger
+                    const EXIT_DIST = 2.4;    // Units to reset the trigger (hysteresis)
+
+                    let nearestHouse: string | null = null;
+                    let minDist = Infinity;
+
+                    for (const [houseKey, type] of Object.entries(INTERACTION_MAP)) {
+                        const [hx, hy] = houseKey.split(',').map(Number);
+                        const dx = gridPos.x - hx;
+                        const dy = gridPos.y - hy;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < EXIT_DIST) {
+                            if (dist < minDist) {
+                                minDist = dist;
+                                nearestHouse = houseKey;
+                            }
+                        }
+                    }
+
+                    if (nearestHouse) {
+                        const [hx, hy] = nearestHouse.split(',').map(Number);
+                        const dx = gridPos.x - hx;
+                        const dy = gridPos.y - hy;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < TRIGGER_DIST && lastTriggeredHouseRef.current !== nearestHouse) {
+                            setActiveInteraction(INTERACTION_MAP[nearestHouse]);
+                            lastTriggeredHouseRef.current = nearestHouse;
+                        } else if (dist >= EXIT_DIST && lastTriggeredHouseRef.current === nearestHouse) {
+                            lastTriggeredHouseRef.current = null;
+                        }
+                    } else {
+                        // Not near any house
+                        lastTriggeredHouseRef.current = null;
                     }
                 }
 

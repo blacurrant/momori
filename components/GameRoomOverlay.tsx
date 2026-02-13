@@ -494,7 +494,7 @@ export function GameRoomOverlay({ activeGame, onStartGame, onExitGame }: GameRoo
                                     {/* Content */}
                                     <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
                                         <div className="bg-white/30 self-start p-3 rounded-2xl backdrop-blur-sm border border-white/20">
-                                            {React.cloneElement(game.icon as React.ReactElement, { size: 24, className: "text-[#3e2723]" })}
+                                            {React.cloneElement(game.icon as React.ReactElement<{ size?: number; className?: string }>, { size: 24, className: "text-[#3e2723]" })}
                                         </div>
                                         <div>
                                             <h3 className="text-2xl font-bold text-[#3e2723] mb-1 font-serif">{game.title}</h3>

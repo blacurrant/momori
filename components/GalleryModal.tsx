@@ -13,13 +13,15 @@ interface GalleryItem {
     description: string;
 }
 
-// Sample Data
-const SAMPLE_GALLERY: GalleryItem[] = [
-    { id: '1', url: 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=80', title: 'Village Mornings', description: 'The sun rising over the misty hills.' },
-    { id: '2', url: 'https://images.unsplash.com/photo-1574169208507-84376144848b?auto=format&fit=crop&w=800&q=80', title: 'Cozy Hearth', description: 'Warmth in the middle of winter.' },
-    { id: '3', url: 'https://images.unsplash.com/photo-1516934024742-b461fba47600?auto=format&fit=crop&w=800&q=80', title: 'Forest Path', description: 'Where the old oak trees whisper.' },
-    { id: '4', url: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=800&q=80', title: 'Spring Bloom', description: 'Flowers returning to the meadow.' },
-    { id: '5', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80', title: 'Deep Woods', description: 'Secrets hidden in the shadows.' },
+// Hall of Fame Data
+const HALL_OF_FAME: GalleryItem[] = [
+    { id: '1', url: '/images/IMG-20241203-WA0022.jpg', title: 'Golden Memories', description: 'A timeless moment captured in the village.' },
+    { id: '2', url: '/images/IMG-20250102-WA0019.jpg', title: 'Winter Whimsy', description: 'The first frost on the cobblestones.' },
+    { id: '3', url: '/images/IMG-20250102-WA0027.jpg', title: 'Emerald Canopy', description: 'Sunlight filtering through the oak leaves.' },
+    { id: '4', url: '/images/IMG-20250102-WA0031.jpg', title: 'Riverside Peace', description: 'The gentle flow of the village brook.' },
+    { id: '5', url: '/images/IMG-20250102-WA0033.jpg', title: 'Autumn Harvest', description: 'Celebrating the bounties of the land.' },
+    { id: '6', url: '/images/IMG-20250102-WA0035.jpg', title: 'Twilight Glow', description: 'Lanterns lighting up the evening path.' },
+    { id: '7', url: '/images/IMG-20250102-WA0038.jpg', title: 'Hidden Nook', description: 'A quiet place for reflection.' },
 ];
 
 interface GalleryModalProps {
@@ -28,19 +30,19 @@ interface GalleryModalProps {
 }
 
 export function GalleryModal({ isOpen, onClose }: GalleryModalProps) {
-    const [activeIndex, setActiveIndex] = useState(2); // Start in middle
+    const [activeIndex, setActiveIndex] = useState(3); // Start in middle of 7 items
 
     // Reset index when opened
     useEffect(() => {
-        if (isOpen) setActiveIndex(2);
+        if (isOpen) setActiveIndex(Math.floor(HALL_OF_FAME.length / 2));
     }, [isOpen]);
 
     const handleNext = () => {
-        setActiveIndex((prev) => (prev + 1) % SAMPLE_GALLERY.length);
+        setActiveIndex((prev) => (prev + 1) % HALL_OF_FAME.length);
     };
 
     const handlePrev = () => {
-        setActiveIndex((prev) => (prev - 1 + SAMPLE_GALLERY.length) % SAMPLE_GALLERY.length);
+        setActiveIndex((prev) => (prev - 1 + HALL_OF_FAME.length) % HALL_OF_FAME.length);
     };
 
     // Helper to get relative index distance for 3D effect
@@ -99,15 +101,19 @@ export function GalleryModal({ isOpen, onClose }: GalleryModalProps) {
                             </motion.h1>
                         </div>
 
-                        {/* 3D Carousel Container */}
-                        <div className="relative w-full max-w-6xl h-[600px] flex items-center justify-center perspective-[1200px] z-30 pointer-events-none">
+                        {/* 3D Carousel */}
+                        <div className="relative w-full h-[400px] flex items-center justify-center perspective-1000">
+                            {HALL_OF_FAME.map((item, index) => {
+                                const dist = getDist(index);
+                                // Loop distribution for infinite carousel effect
+                                let wrappedDist = dist;
+                                if (dist > HALL_OF_FAME.length / 2) wrappedDist -= HALL_OF_FAME.length;
+                                if (dist < -HALL_OF_FAME.length / 2) wrappedDist += HALL_OF_FAME.length;
 
-                            {SAMPLE_GALLERY.map((item, index) => {
-                                const dist = index - activeIndex;
                                 const isActive = index === activeIndex;
 
                                 // Only show neighbors
-                                if (Math.abs(dist) > 2) return null;
+                                if (Math.abs(wrappedDist) > 2) return null;
 
                                 return (
                                     <motion.div
@@ -115,7 +121,7 @@ export function GalleryModal({ isOpen, onClose }: GalleryModalProps) {
                                         className="absolute w-[85vw] max-w-[360px] h-[480px] bg-white p-4 pb-16 shadow-2xl flex flex-col pointer-events-auto cursor-pointer"
                                         initial={false}
                                         animate={{
-                                            x: dist * (window.innerWidth < 768 ? 40 : 380), // Responsive spacing: overlap on mobile, spread on desktop
+                                            x: wrappedDist * (window.innerWidth < 768 ? 40 : 380), // Responsive spacing: overlap on mobile, spread on desktop
                                             z: isActive ? 100 : -200, // Depth
                                             scale: isActive ? 1.0 : 0.8,
                                             opacity: Math.abs(dist) > 2 ? 0 : (Math.abs(dist) > 1 ? 0.5 : 1),

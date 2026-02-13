@@ -3,10 +3,11 @@
 import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
+// @ts-expect-error - maath/random/dist/maath-random.esm does not have a declaration file
 import * as random from 'maath/random/dist/maath-random.esm';
 
 function Stars(props: any) {
-    const ref = useRef<any>();
+    const ref = useRef<any>(null);
     // Generate 5000 random points in a sphere
     const sphere = useMemo(() => random.inSphere(new Float32Array(5000), { radius: 1.5 }), []);
 
