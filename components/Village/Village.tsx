@@ -11,6 +11,7 @@ import { createCharacter } from './Character';
 import { TavernModal } from '../TavernModal';
 import { PlatformSelector } from '../PlatformSelector';
 import { ChatList } from '../ChatList';
+import { ArchiveView } from '../ArchiveView';
 import { ChatExport } from '@/lib/types';
 import { GalleryModal } from '../GalleryModal';
 import { CatRoomModal } from '../CatRoomModal';
@@ -118,7 +119,34 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
     // Interaction State
     const [activeInteraction, setActiveInteraction] = useState<InteractionType | null>(null);
     const [chatData, setChatData] = useState<ChatExport | null>(null);
+    const [starredMessageIds, setStarredMessageIds] = useState<Set<string>>(new Set());
     const lastTriggeredHouseRef = useRef<string | null>(null);
+
+    // Load starred messages from localStorage
+    useEffect(() => {
+        const saved = localStorage.getItem('momori_starred_messages');
+        if (saved) {
+            try {
+                setStarredMessageIds(new Set(JSON.parse(saved)));
+            } catch (e) {
+                console.error("Failed to load starred messages", e);
+            }
+        }
+    }, []);
+
+    // Save starred messages to localStorage
+    useEffect(() => {
+        localStorage.setItem('momori_starred_messages', JSON.stringify(Array.from(starredMessageIds)));
+    }, [starredMessageIds]);
+
+    const handleToggleStar = (id: string) => {
+        setStarredMessageIds(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -604,21 +632,28 @@ export function Village({ width = 1920, height = 1080 }: VillageProps) {
                 <VirtualJoystick onMove={handleJoystickMove} />
             </div>
 
-            {/* Interactions */}
             <TavernModal isOpen={activeInteraction === 'chat'} onClose={() => setActiveInteraction(null)}>
                 {chatData ? (
                     <div className="h-full flex flex-col">
-                        <div className="flex items-center justify-between p-4 border-b border-[#5d4037]/20 bg-[#5d4037]/5">
+                        <div className="flex items-center justify-between p-4 border-b border-[#3e2723]/10 bg-[#2c1810]/5">
                             <button
                                 onClick={() => setChatData(null)}
-                                className="text-[#5d4037] hover:text-[#3e2723] font-serif underline decoration-dotted"
+                                className="text-[#3e2723]/60 hover:text-[#3e2723] font-serif italic flex items-center gap-2 transition-colors"
                             >
-                                ← Back to Archives
+                                <span>←</span>
+                                <span className="underline underline-offset-4 decoration-dotted">Back to Archives</span>
                             </button>
-                            <span className="font-serif text-[#5d4037] font-bold">{chatData.fileName}</span>
+                            <div className="flex flex-col items-end">
+                                <span className="font-serif text-[#2c1810] font-bold leading-none">{chatData.fileName}</span>
+                                <span className="text-[10px] font-serif italic text-[#3e2723]/40 mt-1 uppercase tracking-widest">Archive Log</span>
+                            </div>
                         </div>
                         <div className="flex-1 overflow-hidden">
-                            <ChatList messages={chatData.messages} />
+                            <ArchiveView
+                                data={chatData}
+                                starredMessageIds={starredMessageIds}
+                                onToggleStar={handleToggleStar}
+                            />
                         </div>
                     </div>
                 ) : (

@@ -8,6 +8,7 @@ export interface Message {
   platform: Platform;
   type: "text" | "image" | "video" | "audio" | "system";
   mediaUri?: string;
+  starred?: boolean;
 }
 
 export interface ChatExport {

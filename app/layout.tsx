@@ -24,6 +24,8 @@ export const viewport = {
   themeColor: "#050505",
 };
 
+import { GlobalMusic } from "@/components/UI/GlobalMusic";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.variable, cormorant.variable, "font-sans antialiased bg-[#050505] text-[#e1e1e1]")}>
+        <GlobalMusic />
         {children}
       </body>
     </html>

@@ -5,15 +5,16 @@ import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 
 interface ChatListProps {
     messages: Message[];
+    onToggleStar?: (id: string) => void;
 }
 
-export function ChatList({ messages }: ChatListProps) {
+export function ChatList({ messages, onToggleStar }: ChatListProps) {
     const virtuosoRef = useRef<VirtuosoHandle>(null);
 
     if (messages.length === 0) {
         return (
-            <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-10 text-center">
-                <p>No messages found matching your filter.</p>
+            <div className="h-full flex flex-col items-center justify-center text-[#3e2723]/40 p-10 text-center font-serif italic">
+                <p>The archives are silent on this matter...</p>
             </div>
         );
     }
@@ -29,11 +30,12 @@ export function ChatList({ messages }: ChatListProps) {
                         <MessageBubble
                             message={msg}
                             previousMessage={messages[index - 1]}
+                            onToggleStar={onToggleStar}
                         />
                     </div>
                 )}
-                followOutput={"auto"} // Auto-scroll to bottom like a real chat
-                alignToBottom={false} // Start from top for history view
+                followOutput={"auto"}
+                alignToBottom={false}
             />
         </div>
     );
